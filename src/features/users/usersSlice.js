@@ -6,9 +6,18 @@ const initialState = usersAdapter.getInitialState()
 const usersSlice = createSlice({
   name: 'users',
   initialState,
-  reducers: {},
+  reducers: {
+    login: (state, action) => {
+      const user = state.entities[action.payload]
+      if (user) {
+        user.loggedin = true
+      }
+    }
+  },
   extraReducers:{}
 })
+
+export const { login } = usersSlice.actions
 
 export const { 
   selectAll: selectAllUsers

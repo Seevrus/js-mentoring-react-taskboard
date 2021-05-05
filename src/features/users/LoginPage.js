@@ -1,9 +1,12 @@
 import { useState } from "react"
 import classNames from 'classnames'
 import { selectAllUsers } from "./usersSlice"
-import { useSelector } from "react-redux"
+import { useDispatch, useSelector } from "react-redux"
+import { login } from "../users/usersSlice"
 
 export const LoginPage = () => {
+  const dispatch = useDispatch()
+
   const allUsers = useSelector(selectAllUsers)
   const [userEmail, setUserName] = useState('')
   const [password, setPassword] = useState('')
@@ -19,7 +22,16 @@ export const LoginPage = () => {
 
   const onSubmitButtonClicked = e => {
     const user = allUsers.find(user => user.email === userEmail)
-    if (!user) setValueError(true)
+    if (!user) {
+      setValueError(true)
+    }
+    else if (user.password !== password) {
+      setValueError(true)
+    }
+    else {
+      setValueError(false)
+      dispatch(login(user.id))
+    }
   }
 
   const inputClass = classNames({
