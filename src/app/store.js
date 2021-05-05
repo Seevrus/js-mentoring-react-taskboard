@@ -1,5 +1,6 @@
-import { configureStore } from '@reduxjs/toolkit';
-import usersReducer from '../features/users/usersSlice';
+import { configureStore } from '@reduxjs/toolkit'
+import userReducer from '../features/user/userSlice'
+import usersReducer from '../features/users/usersSlice'
 
 const preloadedState = {
   users: {
@@ -14,6 +15,7 @@ const preloadedState = {
 
 export const store = configureStore({
   reducer: {
+    user: userReducer,
     users: usersReducer,
   },
   preloadedState
