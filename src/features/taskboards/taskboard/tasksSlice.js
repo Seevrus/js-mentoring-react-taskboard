@@ -25,4 +25,8 @@ const tasksSlice = createSlice({
   reducers: {}
 })
 
+export const { 
+  selectAll: selectAllTasks,
+} = tasksAdapter.getSelectors(state => state.tasks)
+
 export default tasksSlice.reducer

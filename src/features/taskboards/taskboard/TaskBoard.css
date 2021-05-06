@@ -6,6 +6,7 @@
 
 .current-users {
   display: flex;
+  flex-wrap: wrap;
   font-size: 1rem;
   font-weight: 400;
 }
@@ -14,7 +15,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin: 0 2px 0 2px;
+  margin: 2px;
   padding: 0 5px 0 10px;
   border-radius: 10px;
   background: #0366ee;
@@ -25,9 +26,13 @@
   background: #0246a2;
 }
 
-.current-user > svg {
-  color: red;
+.current-user > .current-user-remove {
   cursor: pointer;
+  display: flex;
+}
+
+.current-user > .current-user-remove > svg {
+  color: red;
   height: 20px;
   width: 20px;
 }

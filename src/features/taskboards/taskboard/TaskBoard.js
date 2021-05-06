@@ -15,7 +15,7 @@ const TaskBoardHeader = ({ text }) => {
   )
 }
 
-export const TaskBoard = ({ userIds, taskIds }) => {
+export const TaskBoard = ({ boardId, userIds, taskIds }) => {
   const tasks = useSelector(selectAllTasks)
   const filteredTasks = tasks.filter(task => taskIds.includes(task.id))
   const tasksToDo = filteredTasks.filter(task => task.status === "todo")
@@ -26,7 +26,7 @@ export const TaskBoard = ({ userIds, taskIds }) => {
     <div className="container">
       <h2>Board 1</h2>
       <AddNewUser />
-      <CurrentUsers userIds={userIds} />
+      <CurrentUsers boardId={boardId} userIds={userIds} />
       <div className="grid-container">
         <div className="grid-todo">
           <TaskBoardHeader text= "To Do" />

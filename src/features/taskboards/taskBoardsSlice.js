@@ -5,8 +5,8 @@
   entities: [
     {
       id:
-      users: [<userId>, <userId>, ...]
-      tasks: [<taskId>, <taskId>, ...]
+      userIds: [<userId>, <userId>, ...]
+      taskIds: [<taskId>, <taskId>, ...]
     },
     ...
   ]
@@ -22,11 +22,21 @@ const initialState = taskBoardsAdapter.getInitialState()
 const taskBoardsSlice = createSlice({
   name: 'taskBoards',
   initialState,
-  reducers: {}
+  reducers: {
+    removeUser: (state, action) => {
+      const { boardId, userId } = action.payload
+      const board = state.entities[boardId]
+      if (board) {
+        board.userIds = board.userIds.filter(id => id !== userId)
+      }
+    }
+  }
 })
 
 export const {
   selectAll: selectAllTaskBoards,
 } = taskBoardsAdapter.getSelectors(state => state.taskBoards)
+
+export const { removeUser } = taskBoardsSlice.actions
 
 export default taskBoardsSlice.reducer
