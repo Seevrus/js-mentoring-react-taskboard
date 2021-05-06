@@ -4,13 +4,13 @@ import {
   Route, 
   BrowserRouter as Router, 
   Switch } from 'react-router-dom'
-import { TaskBoardList } from './features/taskboards/TaskBoardList';
+import { TaskBoardsList } from './features/taskboards/TaskBoardsList';
 
 function App() {
   return (
     <Router>
       <Switch>
-        <Route exact path="/" component={TaskBoardList} />
+        <Route exact path="/" component={TaskBoardsList} />
         <Redirect to="/" />
       </Switch>
     </Router>

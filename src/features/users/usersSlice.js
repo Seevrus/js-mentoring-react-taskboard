@@ -20,7 +20,7 @@ const usersSlice = createSlice({
 export const { login } = usersSlice.actions
 
 export const { 
-  selectAll: selectAllUsers
+  selectAll: selectAllUsers,
 } = usersAdapter.getSelectors(state => state.users)
 
 export default usersSlice.reducer

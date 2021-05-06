@@ -27,6 +27,6 @@ const taskBoardsSlice = createSlice({
 
 export const {
   selectAll: selectAllTaskBoards,
-} = taskBoardsAdapter.getSelectors()
+} = taskBoardsAdapter.getSelectors(state => state.taskBoards)
 
 export default taskBoardsSlice.reducer

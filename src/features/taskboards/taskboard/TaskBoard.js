@@ -1,46 +1,44 @@
 import { AddNewUser } from "./AddNewUser"
 import { Task } from "./Task"
 import "./TaskBoard.css"
-import { TaskBoardHeader } from "./TaskBoardHeader"
 import { BiPlus, BiTrash } from "react-icons/bi"
-import { IoIosClose } from "react-icons/io"
+import { CurrentUsers } from "./CurrentUsers"
+import { useSelector } from "react-redux"
+import { selectAllTasks } from "./tasksSlice"
 
-export const TaskBoard = () => {
+const TaskBoardHeader = ({ text }) => {
+  return (
+    <div className="todo-header">
+      {text}
+      <hr />
+    </div>
+  )
+}
+
+export const TaskBoard = ({ userIds, taskIds }) => {
+  const tasks = useSelector(selectAllTasks)
+  const filteredTasks = tasks.filter(task => taskIds.includes(task.id))
+  const tasksToDo = filteredTasks.filter(task => task.status === "todo")
+  const tasksInProgress = filteredTasks.filter(task => task.status === "inProgress")
+  const tasksFinished = filteredTasks.filter(task => task.status === "finished")
+
   return (
     <div className="container">
       <h2>Board 1</h2>
       <AddNewUser />
-      <div className="current-users-container">
-        Users currently accessing this board:
-        <div className="current-users">
-          <div className="current-user">
-            <span>user@example.com</span>
-            <IoIosClose />
-          </div>
-          <div className="current-user">
-            <span>user2@example.com</span>
-            <IoIosClose />
-          </div>
-          <div className="current-user">
-            <span>user3@example.com</span>
-            <IoIosClose />
-          </div>
-        </div>
-      </div>
+      <CurrentUsers userIds={userIds} />
       <div className="grid-container">
         <div className="grid-todo">
           <TaskBoardHeader text= "To Do" />
-          <Task text="Task to do 1" />
-          <Task text="Task to do 2" />
+          {tasksToDo.map(task => <Task key={task.id} text={task.text} />)}
         </div>
         <div className="grid-in-progress">
           <TaskBoardHeader text= "In Progress" />
-          <Task text="Task in progress" />
+          {tasksInProgress.map(task => <Task key={task.id} text={task.text} />)}
         </div>
         <div className="grid-finished">
           <TaskBoardHeader text= "Finished" />
-          <Task text="Done task" />
-          <Task text="Finished task" />
+          {tasksFinished.map(task => <Task key={task.id} text={task.text} />)}
         </div>  
       </div>
       <div className="control-buttons">
