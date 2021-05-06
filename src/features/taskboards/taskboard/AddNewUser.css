@@ -1,0 +1,55 @@
+.auto-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 200px;
+}
+
+input {
+  padding: 10px;
+  height: 20px;
+  width: 500px;
+  border: 1px solid purple;
+  margin: 10px;
+  font-size: 18px;
+  text-transform: capitalize;
+  align-self: center;
+  width: 66%
+}
+
+.pos-rel {
+  position: relative;
+}
+
+.auto-container {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  position: absolute;
+  top: 22px;
+  border-width: 0px 1px 1px 1px;
+  border-style: solid;
+  border-color: goldenrod;
+  background-color: whitesmoke;
+  align-self: center;
+  width: 66%
+}
+
+.option {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 5px;
+}
+
+.option:hover {
+  cursor: pointer;
+}
+
+.flex-container {
+  display: flex;
+}
+
+.flex-column {
+  flex-direction: column;
+}

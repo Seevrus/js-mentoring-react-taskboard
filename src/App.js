@@ -4,14 +4,13 @@ import {
   Route, 
   BrowserRouter as Router, 
   Switch } from 'react-router-dom'
-
-import { LoginPage } from './features/users/LoginPage'
+import { TaskBoardList } from './features/taskboards/TaskBoardList';
 
 function App() {
   return (
     <Router>
       <Switch>
-        <Route exact path="/" component={LoginPage} />
+        <Route exact path="/" component={TaskBoardList} />
         <Redirect to="/" />
       </Switch>
     </Router>
