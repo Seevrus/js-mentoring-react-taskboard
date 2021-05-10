@@ -6,7 +6,7 @@ import { CurrentUsers } from "./CurrentUsers"
 import { useSelector } from "react-redux"
 import { selectAllTasks } from "./tasksSlice"
 
-const TaskBoardHeader = ({ text }) => {
+const TaskBoardColumnHeader = ({ text }) => {
   return (
     <div className="todo-header">
       {text}
@@ -15,32 +15,36 @@ const TaskBoardHeader = ({ text }) => {
   )
 }
 
-export const TaskBoard = ({ boardId, userIds, taskIds }) => {
+const TaskBoardColumn = ({ boardId, classn, headerText, taskIds, taskSt }) => {
   const tasks = useSelector(selectAllTasks)
   const filteredTasks = tasks.filter(task => taskIds.includes(task.id))
-  const tasksToDo = filteredTasks.filter(task => task.status === "todo")
-  const tasksInProgress = filteredTasks.filter(task => task.status === "inProgress")
-  const tasksFinished = filteredTasks.filter(task => task.status === "finished")
+  const tasksToDisplay = filteredTasks.filter(task => task.status === taskSt)
 
+  return (
+    <div className={classn}>
+      <TaskBoardColumnHeader text={headerText} />
+      {tasksToDisplay.map(task => <Task key={task.id} boardId={boardId} taskId={task.id} text={task.text} />)}
+    </div>
+  )
+}
+
+const TaskBoardBody = ({ boardId, taskIds }) => {
+  return (
+    <div className="grid-container">
+      <TaskBoardColumn boardId={boardId} classn="grid-todo" headerText="To Do" taskIds={taskIds} taskSt="todo" />
+      <TaskBoardColumn boardId={boardId} classn="grid-in-progress" headerText="In Progress" taskIds={taskIds} taskSt="inProgress" />
+      <TaskBoardColumn boardId={boardId} classn="grid-finished" headerText="Finished" taskIds={taskIds} taskSt="finished" />
+    </div>
+  )
+}
+
+export const TaskBoard = ({ boardId, userIds, taskIds }) => {
   return (
     <div className="container">
       <h2>Board 1</h2>
       <AddNewUser />
       <CurrentUsers boardId={boardId} userIds={userIds} />
-      <div className="grid-container">
-        <div className="grid-todo">
-          <TaskBoardHeader text= "To Do" />
-          {tasksToDo.map(task => <Task key={task.id} boardId={boardId} taskId={task.id} text={task.text} />)}
-        </div>
-        <div className="grid-in-progress">
-          <TaskBoardHeader text= "In Progress" />
-          {tasksInProgress.map(task => <Task key={task.id} boardId={boardId} taskId={task.id} text={task.text} />)}
-        </div>
-        <div className="grid-finished">
-          <TaskBoardHeader text= "Finished" />
-          {tasksFinished.map(task => <Task key={task.id} boardId={boardId} taskId={task.id} text={task.text} />)}
-        </div>  
-      </div>
+      <TaskBoardBody boardId={boardId} taskIds={taskIds} />
       <div className="control-buttons">
         <button className="task-button delete-task">
           <BiTrash />
