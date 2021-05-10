@@ -23,6 +23,20 @@ const taskBoardsSlice = createSlice({
   name: 'taskBoards',
   initialState,
   reducers: {
+    addTask: (state, action) => {
+      const { boardId, taskId } = action.payload
+      const board = state.entities[boardId]
+      if (board) {
+        board.taskIds.push(taskId)
+      }
+    },
+    addUser: (state, action) => {
+      const { boardId, userId } = action.payload
+      const board = state.entities[boardId]
+      if (board) {
+        board.userIds.push(userId)
+      }
+    },
     removeBoard: taskBoardsAdapter.removeOne,
     removeUser: (state, action) => {
       const { boardId, userId } = action.payload
@@ -51,6 +65,12 @@ export const selectAllTasksOnBoard = createSelector(
   taskBoard => taskBoard.taskIds
 )
 
-export const { removeBoard, removeUser, removeTask } = taskBoardsSlice.actions
+export const { 
+  addTask,
+  addUser, 
+  removeBoard, 
+  removeUser, 
+  removeTask 
+} = taskBoardsSlice.actions
 
 export default taskBoardsSlice.reducer

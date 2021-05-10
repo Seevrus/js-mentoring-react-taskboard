@@ -5,14 +5,13 @@
   width: 200px;
 }
 
-input {
+input.add-new-user {
   padding: 10px;
   height: 20px;
   width: 500px;
   border: 1px solid purple;
   margin: 10px;
   font-size: 18px;
-  text-transform: capitalize;
   align-self: center;
   width: 66%
 }

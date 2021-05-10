@@ -3,14 +3,13 @@ import { useSelector } from "react-redux"
 import { selectAllUsers } from "../../users/usersSlice"
 import './AddNewUser.css'
 
-export const AddNewUser = () => {
+export const AddNewUser = ({ boardId }) => {
   const users = useSelector(selectAllUsers)
   const [filteredUsers, setFilteredUsers] = useState([])
 
   const onSearchInputChange = e => {
     const query = e.target.value.toLowerCase();
     setFilteredUsers(users.filter(user => {
-      console.log(user.email.includes(query))
       return user.email.toLowerCase().includes(query)
     }))
   }
@@ -19,6 +18,7 @@ export const AddNewUser = () => {
   return (
     <div className="flex-container flex-column pos-rel">
       <input
+        className="add-new-user"
         id="search-email"
         name="search-email"
         onFocus={() => setDisplay(true)}
