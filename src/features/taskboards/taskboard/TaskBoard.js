@@ -3,8 +3,9 @@ import { Task } from "./Task"
 import "./TaskBoard.css"
 import { BiPlus, BiTrash } from "react-icons/bi"
 import { CurrentUsers } from "./CurrentUsers"
-import { useSelector } from "react-redux"
-import { selectAllTasks } from "./tasksSlice"
+import { useDispatch, useSelector } from "react-redux"
+import { removeTask, selectAllTasks } from "./tasksSlice"
+import { removeBoard, selectAllTasksOnBoard } from "../taskBoardsSlice"
 
 const TaskBoardColumnHeader = ({ text }) => {
   return (
@@ -55,9 +56,18 @@ const TaskBoardBody = ({ boardId, tasksOnBoard }) => {
   )
 }
 
-export const TaskBoard = ({ boardId, name, userIds, taskIds }) => {
+export const TaskBoard = ({ boardId, name, userIds }) => {
+  const dispatch = useDispatch();
+  const taskIds = useSelector(state => selectAllTasksOnBoard(state, boardId))
   const allTasks = useSelector(selectAllTasks)
   const tasksOnBoard = allTasks.filter(task => taskIds.includes(task.id))
+
+  const onRemoveBoard = e => {
+    for (let id of taskIds) {
+      dispatch(removeTask(id))
+    }
+    dispatch(removeBoard(boardId))
+  }
 
   return (
     <div className="container">
@@ -66,7 +76,7 @@ export const TaskBoard = ({ boardId, name, userIds, taskIds }) => {
       <CurrentUsers boardId={boardId} userIds={userIds} />
       <TaskBoardBody boardId={boardId} tasksOnBoard={tasksOnBoard} />
       <div className="control-buttons">
-        <button className="task-button delete-task">
+        <button className="task-button delete-task" onClick={onRemoveBoard}>
           <BiTrash />
           <span>Delete Board</span>
         </button>

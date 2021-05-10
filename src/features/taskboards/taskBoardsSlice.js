@@ -14,7 +14,7 @@
 
  */
 
-import { createEntityAdapter, createSlice } from "@reduxjs/toolkit";
+import { createEntityAdapter, createSelector, createSlice } from "@reduxjs/toolkit";
 
 const taskBoardsAdapter = createEntityAdapter()
 const initialState = taskBoardsAdapter.getInitialState()
@@ -23,6 +23,7 @@ const taskBoardsSlice = createSlice({
   name: 'taskBoards',
   initialState,
   reducers: {
+    removeBoard: taskBoardsAdapter.removeOne,
     removeUser: (state, action) => {
       const { boardId, userId } = action.payload
       const board = state.entities[boardId]
@@ -42,8 +43,14 @@ const taskBoardsSlice = createSlice({
 
 export const {
   selectAll: selectAllTaskBoards,
+  selectById: selectTaskBoard,
 } = taskBoardsAdapter.getSelectors(state => state.taskBoards)
 
-export const { removeUser, removeTask } = taskBoardsSlice.actions
+export const selectAllTasksOnBoard = createSelector(
+  selectTaskBoard,
+  taskBoard => taskBoard.taskIds
+)
+
+export const { removeBoard, removeUser, removeTask } = taskBoardsSlice.actions
 
 export default taskBoardsSlice.reducer
