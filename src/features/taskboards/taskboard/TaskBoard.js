@@ -15,36 +15,56 @@ const TaskBoardColumnHeader = ({ text }) => {
   )
 }
 
-const TaskBoardColumn = ({ boardId, classn, headerText, taskIds, taskSt }) => {
-  const tasks = useSelector(selectAllTasks)
-  const filteredTasks = tasks.filter(task => taskIds.includes(task.id))
-  const tasksToDisplay = filteredTasks.filter(task => task.status === taskSt)
+const TaskBoardColumn = ({ boardId, tasksOnBoard, columnType }) => {
+
+  let text, classn, status;
+  switch (columnType) {
+    case "inProgress":
+      text = "In Progress";
+      classn = "grid-in-progress";
+      status = "inProgress";
+      break;
+    case "finished":
+      text = "Finished";
+      classn = "grid-finished";
+      status = "finished";
+      break;
+    default:
+      text = "To Do";
+      classn = "grid-todo";
+      status = "todo";
+  }
+
+  const tasksToDisplay = tasksOnBoard.filter(task => task.status === status)
 
   return (
     <div className={classn}>
-      <TaskBoardColumnHeader text={headerText} />
+      <TaskBoardColumnHeader text={text} />
       {tasksToDisplay.map(task => <Task key={task.id} boardId={boardId} taskId={task.id} text={task.text} />)}
     </div>
   )
 }
 
-const TaskBoardBody = ({ boardId, taskIds }) => {
+const TaskBoardBody = ({ boardId, tasksOnBoard }) => {
   return (
     <div className="grid-container">
-      <TaskBoardColumn boardId={boardId} classn="grid-todo" headerText="To Do" taskIds={taskIds} taskSt="todo" />
-      <TaskBoardColumn boardId={boardId} classn="grid-in-progress" headerText="In Progress" taskIds={taskIds} taskSt="inProgress" />
-      <TaskBoardColumn boardId={boardId} classn="grid-finished" headerText="Finished" taskIds={taskIds} taskSt="finished" />
+      <TaskBoardColumn boardId={boardId} tasksOnBoard={tasksOnBoard} columnType="" />
+      <TaskBoardColumn boardId={boardId} tasksOnBoard={tasksOnBoard} columnType="inProgress" />
+      <TaskBoardColumn boardId={boardId} tasksOnBoard={tasksOnBoard} columnType="finished" />
     </div>
   )
 }
 
 export const TaskBoard = ({ boardId, userIds, taskIds }) => {
+  const allTasks = useSelector(selectAllTasks)
+  const tasksOnBoard = allTasks.filter(task => taskIds.includes(task.id))
+
   return (
     <div className="container">
       <h2>Board 1</h2>
       <AddNewUser />
       <CurrentUsers boardId={boardId} userIds={userIds} />
-      <TaskBoardBody boardId={boardId} taskIds={taskIds} />
+      <TaskBoardBody boardId={boardId} tasksOnBoard={tasksOnBoard} />
       <div className="control-buttons">
         <button className="task-button delete-task">
           <BiTrash />
