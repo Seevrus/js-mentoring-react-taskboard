@@ -6,7 +6,14 @@ export const TaskBoardsList = () => {
   const taskBoards = useSelector(selectAllTaskBoards)
 
   return taskBoards.map(taskBoard => {
-    return <TaskBoard key={taskBoard.id} boardId={taskBoard.id} userIds={taskBoard.userIds} taskIds={taskBoard.taskIds} />
+    return (
+      <TaskBoard 
+        key={taskBoard.id} 
+        boardId={taskBoard.id} 
+        name={taskBoard.name} 
+        userIds={taskBoard.userIds} 
+        taskIds={taskBoard.taskIds} />
+    )
   })
 
 }

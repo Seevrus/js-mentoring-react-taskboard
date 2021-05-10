@@ -15,7 +15,7 @@ const preloadedState = {
   taskBoards: {
     ids: [1],
     entities: {
-      1: { id: 1, userIds: [2, 3], taskIds: [1, 2, 3, 4, 5] },
+      1: { id: 1, name: "Board 1", userIds: [2, 3], taskIds: [1, 2, 3, 4, 5] },
     }
   },
   tasks: {

@@ -55,13 +55,13 @@ const TaskBoardBody = ({ boardId, tasksOnBoard }) => {
   )
 }
 
-export const TaskBoard = ({ boardId, userIds, taskIds }) => {
+export const TaskBoard = ({ boardId, name, userIds, taskIds }) => {
   const allTasks = useSelector(selectAllTasks)
   const tasksOnBoard = allTasks.filter(task => taskIds.includes(task.id))
 
   return (
     <div className="container">
-      <h2>Board 1</h2>
+      <h2>{name}</h2>
       <AddNewUser />
       <CurrentUsers boardId={boardId} userIds={userIds} />
       <TaskBoardBody boardId={boardId} tasksOnBoard={tasksOnBoard} />
