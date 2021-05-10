@@ -23,6 +23,7 @@ const taskBoardsSlice = createSlice({
   name: 'taskBoards',
   initialState,
   reducers: {
+    addBoard: taskBoardsAdapter.addOne,
     addTask: (state, action) => {
       const { boardId, taskId } = action.payload
       const board = state.entities[boardId]
@@ -65,12 +66,27 @@ export const selectAllTasksOnBoard = createSelector(
   taskBoard => taskBoard.taskIds
 )
 
+export const selectAllTaskBoardsByUserId = createSelector(
+  selectAllTaskBoards,
+  state => state.filters,
+  (taskBoards, filters) => {
+    const userId = filters.currentUser;
+    return taskBoards.filter(board => board.userIds.includes(userId))
+  }
+)
+
 export const { 
+  addBoard,
   addTask,
   addUser, 
   removeBoard, 
   removeUser, 
   removeTask 
 } = taskBoardsSlice.actions
+
+export const getMaxId = createSelector(
+  selectAllTaskBoards,
+  taskBoards => taskBoards.reduce((board, maxId) => board.id > maxId ? board.id : maxId, -1).id
+)
 
 export default taskBoardsSlice.reducer

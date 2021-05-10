@@ -1,7 +1,8 @@
 import { configureStore } from '@reduxjs/toolkit'
 import tasksSlice from '../features/taskboards/taskboard/tasksSlice';
 import taskBoardsSlice from '../features/taskboards/taskBoardsSlice';
-import usersReducer from '../features/users/usersSlice'
+import usersSlice from '../features/users/usersSlice'
+import filtersSlice from '../features/filters/filtersSlice'
 
 const preloadedState = {
   users: {
@@ -27,14 +28,18 @@ const preloadedState = {
       4: { id: 4, text: "Done task", status: "finished" },
       5: { id: 5, text: "Finished task", status: "finished" },
     }
+  },
+  filters: {
+    currentUser: 3,
   }
 }
 
 export const store = configureStore({
   reducer: {
-    users: usersReducer,
+    users: usersSlice,
     taskBoards: taskBoardsSlice,
-    tasks: tasksSlice
+    tasks: tasksSlice,
+    filters: filtersSlice,
   },
   preloadedState
 });

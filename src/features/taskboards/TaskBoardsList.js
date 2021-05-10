@@ -1,19 +1,67 @@
-import { useSelector } from 'react-redux'
+import { useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 import { TaskBoard } from './taskboard/TaskBoard'
-import { selectAllTaskBoards } from './taskBoardsSlice'
+import { 
+  addBoard, 
+  getMaxId as getMaxBoardId, 
+  selectAllTaskBoardsByUserId } from './taskBoardsSlice'
+import { BiPlus } from "react-icons/bi"
+import { getCurrentUser } from '../filters/filtersSlice'
+
+const AddTaksBoardForm = ({ currentUserId }) => {
+  const [addBoardFormVisible, setAddBoardFormVisible] = useState(false)
+  const [boardName, setBoardName] = useState('')
+  const maxBoardId = useSelector(getMaxBoardId)
+
+  const dispatch = useDispatch()
+  const onAddBoard = e => {
+    if (e.keyCode === 13) {
+      e.preventDefault();
+      dispatch(addBoard({ id: maxBoardId+1, name: e.target.value, userIds: [currentUserId], taskIds: [] }))
+      setAddBoardFormVisible(false)
+    }
+  }
+
+  return (
+    <div>
+      <button className="task-button add-task" onClick={() => setAddBoardFormVisible(true)}>
+        <BiPlus />
+        <span>Add board</span>
+      </button>
+
+      {addBoardFormVisible && 
+        <>
+          <label htmlFor="name">Board name</label>
+          <input 
+            type="text" 
+            id="name" 
+            value={boardName}
+            onChange={e => setBoardName(e.target.value)}
+            onKeyUp={onAddBoard}
+            placeholder="Enter board name..." />
+        </>}
+    </div>
+  )
+}
 
 export const TaskBoardsList = () => {
-  const taskBoards = useSelector(selectAllTaskBoards)
+  const taskBoards = useSelector(selectAllTaskBoardsByUserId)
+  const currentUserId = useSelector(getCurrentUser)
 
-  return taskBoards.map(taskBoard => {
-    return (
-      <TaskBoard 
-        key={taskBoard.id} 
-        boardId={taskBoard.id} 
-        name={taskBoard.name} 
-        userIds={taskBoard.userIds} 
-        taskIds={taskBoard.taskIds} />
-    )
-  })
+  return (
+    <div className="container">
+      {taskBoards.map(taskBoard => {
+        return (
+          <TaskBoard 
+            key={taskBoard.id} 
+            boardId={taskBoard.id} 
+            name={taskBoard.name} 
+            userIds={taskBoard.userIds.filter(id => id !== currentUserId)} 
+            taskIds={taskBoard.taskIds} />
+        )
+      })}
+      <AddTaksBoardForm currentUserId={currentUserId} />
+    </div>
+  )
 
 }
