@@ -56,6 +56,7 @@ export const TaskBoardsList = () => {
             key={taskBoard.id} 
             boardId={taskBoard.id} 
             name={taskBoard.name} 
+            currentUser={currentUserId}
             userIds={taskBoard.userIds.filter(id => id !== currentUserId)} 
             taskIds={taskBoard.taskIds} />
         )

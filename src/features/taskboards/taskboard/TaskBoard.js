@@ -87,7 +87,7 @@ const AddTaskForm = ({ boardId, hide }) => {
   )
 }
 
-export const TaskBoard = ({ boardId, name, userIds }) => {
+export const TaskBoard = ({ boardId, name, currentUser, userIds }) => {
   const dispatch = useDispatch();
   const taskIds = useSelector(state => selectAllTasksOnBoard(state, boardId))
   const allTasks = useSelector(selectAllTasks)
@@ -104,7 +104,7 @@ export const TaskBoard = ({ boardId, name, userIds }) => {
   return (
     <div className="container">
       <h2>{name}</h2>
-      <AddNewUser />
+      <AddNewUser boardId={boardId} currentUser={currentUser} userIds={userIds} />
       <CurrentUsers boardId={boardId} userIds={userIds} />
       <TaskBoardBody boardId={boardId} tasksOnBoard={tasksOnBoard} />
       <div className="control-buttons">

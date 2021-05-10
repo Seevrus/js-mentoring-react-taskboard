@@ -25,7 +25,7 @@ input.add-new-user {
   flex-direction: column;
   align-items: flex-start;
   position: absolute;
-  top: 22px;
+  top: 33px;
   border-width: 0px 1px 1px 1px;
   border-style: solid;
   border-color: goldenrod;

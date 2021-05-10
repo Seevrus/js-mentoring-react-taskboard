@@ -24,7 +24,7 @@ export const CurrentUsers = ({ boardId, userIds }) => {
 
   return (
     <div className="current-users-container">
-      Users currently accessing this board:
+      Other users currently accessing this board:
       <div className="current-users">
         {filteredUsers.map(user => {
           return <CurrentUser key={user.id} boardId={boardId} userId={user.id} email={user.email} />
