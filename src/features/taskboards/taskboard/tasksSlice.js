@@ -23,11 +23,7 @@ const tasksSlice = createSlice({
   name: 'tasks',
   initialState,
   reducers: {
-    addTask: (state, action) => {
-      const id = getMaxId()
-      const { name, userId } = action.payload
-      tasksAdapter.addOne({ id: id+1, name, userIds: [userId], taskIds: [] })
-    },
+    addTask: tasksAdapter.addOne,
     removeTask: tasksAdapter.removeOne
   }
 })

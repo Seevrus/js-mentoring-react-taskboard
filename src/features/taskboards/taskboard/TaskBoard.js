@@ -75,7 +75,7 @@ const AddTaskForm = ({ boardId, hide }) => {
   }
 
   return (
-    <div>
+    <div className="add-new-task-form">
       <label htmlFor="new-task">Add new task:</label>
       <input 
         id="new-task"
