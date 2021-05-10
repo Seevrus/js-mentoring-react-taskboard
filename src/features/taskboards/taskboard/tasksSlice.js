@@ -22,11 +22,15 @@ const initialState = tasksAdapter.getInitialState()
 const tasksSlice = createSlice({
   name: 'tasks',
   initialState,
-  reducers: {}
+  reducers: {
+    removeTask: tasksAdapter.removeOne
+  }
 })
 
 export const { 
   selectAll: selectAllTasks,
 } = tasksAdapter.getSelectors(state => state.tasks)
+
+export const { removeTask } = tasksSlice.actions
 
 export default tasksSlice.reducer

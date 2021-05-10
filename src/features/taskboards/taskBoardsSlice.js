@@ -29,6 +29,13 @@ const taskBoardsSlice = createSlice({
       if (board) {
         board.userIds = board.userIds.filter(id => id !== userId)
       }
+    },
+    removeTask: (state, action) => {
+      const { boardId, taskId } = action.payload
+      const board = state.entities[boardId]
+      if (board) {
+        board.taskIds = board.taskIds.filter(id => id !== taskId)
+      }
     }
   }
 })
@@ -37,6 +44,6 @@ export const {
   selectAll: selectAllTaskBoards,
 } = taskBoardsAdapter.getSelectors(state => state.taskBoards)
 
-export const { removeUser } = taskBoardsSlice.actions
+export const { removeUser, removeTask } = taskBoardsSlice.actions
 
 export default taskBoardsSlice.reducer

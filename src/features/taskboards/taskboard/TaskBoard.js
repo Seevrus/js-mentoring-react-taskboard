@@ -30,15 +30,15 @@ export const TaskBoard = ({ boardId, userIds, taskIds }) => {
       <div className="grid-container">
         <div className="grid-todo">
           <TaskBoardHeader text= "To Do" />
-          {tasksToDo.map(task => <Task key={task.id} text={task.text} />)}
+          {tasksToDo.map(task => <Task key={task.id} boardId={boardId} taskId={task.id} text={task.text} />)}
         </div>
         <div className="grid-in-progress">
           <TaskBoardHeader text= "In Progress" />
-          {tasksInProgress.map(task => <Task key={task.id} text={task.text} />)}
+          {tasksInProgress.map(task => <Task key={task.id} boardId={boardId} taskId={task.id} text={task.text} />)}
         </div>
         <div className="grid-finished">
           <TaskBoardHeader text= "Finished" />
-          {tasksFinished.map(task => <Task key={task.id} text={task.text} />)}
+          {tasksFinished.map(task => <Task key={task.id} boardId={boardId} taskId={task.id} text={task.text} />)}
         </div>  
       </div>
       <div className="control-buttons">
