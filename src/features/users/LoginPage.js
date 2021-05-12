@@ -3,6 +3,7 @@ import classNames from 'classnames'
 import { selectAllUsers } from "./usersSlice"
 import { useDispatch, useSelector } from "react-redux"
 import { login } from "../users/usersSlice"
+import { setCurrentUser } from "../filters/filtersSlice"
 
 export const LoginPage = () => {
   const dispatch = useDispatch()
@@ -31,6 +32,7 @@ export const LoginPage = () => {
     else {
       setValueError(false)
       dispatch(login(user.id))
+      dispatch(setCurrentUser(user.id))
     }
   }
 
