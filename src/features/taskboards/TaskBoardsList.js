@@ -1,5 +1,7 @@
 import { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import { HTML5Backend } from 'react-dnd-html5-backend'
+import { DndProvider } from 'react-dnd'
 import { TaskBoard } from './taskboard/TaskBoard'
 import { 
   addBoard, 
@@ -52,13 +54,14 @@ export const TaskBoardsList = () => {
     <div className="container">
       {taskBoards.map(taskBoard => {
         return (
-          <TaskBoard 
-            key={taskBoard.id} 
-            boardId={taskBoard.id} 
-            name={taskBoard.name} 
-            currentUser={currentUserId}
-            userIds={taskBoard.userIds.filter(id => id !== currentUserId)} 
-            taskIds={taskBoard.taskIds} />
+          <DndProvider key={taskBoard.id} backend={HTML5Backend}>
+            <TaskBoard
+              boardId={taskBoard.id}
+              name={taskBoard.name}
+              currentUser={currentUserId}
+              userIds={taskBoard.userIds.filter(id => id !== currentUserId)}
+              taskIds={taskBoard.taskIds} />
+          </DndProvider>
         )
       })}
       <AddTaksBoardForm currentUserId={currentUserId} />

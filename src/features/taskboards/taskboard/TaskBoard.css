@@ -45,6 +45,10 @@
 .grid-in-progress { grid-area: in-progress; }
 .grid-finished { grid-area: done; }
 
+.grid-todo.active, .grid-in-progress.active, .grid-finished.active {
+  background: rgb(248, 242, 220);
+}
+
 .grid-container {
   display: grid;
   grid-template-areas:
@@ -74,10 +78,15 @@
 
 .task {
   border: 2px solid #2196F3;
+  cursor: move;
   font-size: 18px;
   margin-top: 5px;
   margin-bottom: 5px;
   padding: 2px 5px 2px 5px;
+}
+
+.task.is-dragged {
+  opacity: 0.5;
 }
 
 .control-buttons {

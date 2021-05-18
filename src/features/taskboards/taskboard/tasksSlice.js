@@ -24,7 +24,14 @@ const tasksSlice = createSlice({
   initialState,
   reducers: {
     addTask: tasksAdapter.addOne,
-    removeTask: tasksAdapter.removeOne
+    removeTask: tasksAdapter.removeOne,
+    updateTask: (state, action) => {
+      const { id, status } = action.payload
+      const existingTodo = state.entities[id]
+      if (existingTodo) {
+        existingTodo.status = status
+      }
+    },
   }
 })
 
@@ -37,6 +44,6 @@ export const getMaxId = createSelector(
   tasks => tasks.reduce((task, maxId) => task.id > maxId ? task.id : maxId, -1).id
 )
 
-export const { addTask, removeTask } = tasksSlice.actions
+export const { addTask, removeTask, updateTask } = tasksSlice.actions
 
 export default tasksSlice.reducer

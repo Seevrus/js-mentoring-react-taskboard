@@ -1,15 +1,18 @@
+import { useState } from "react"
+import { useDispatch, useSelector } from "react-redux"
+import { useDrop } from 'react-dnd'
+import classNames from 'classnames'
+
 import { AddNewUser } from "./AddNewUser"
 import { Task } from "./Task"
 import "./TaskBoard.css"
 import { BiPlus, BiTrash } from "react-icons/bi"
 import { CurrentUsers } from "./CurrentUsers"
-import { useDispatch, useSelector } from "react-redux"
-import { addTask, getMaxId, removeTask, selectAllTasks } from "./tasksSlice"
+import { addTask, getMaxId, removeTask, updateTask, selectAllTasks } from "./tasksSlice"
 import { 
   addTask as addTaskToBoard, 
   removeBoard, 
   selectAllTasksOnBoard } from "../taskBoardsSlice"
-import { useState } from "react"
 
 const TaskBoardColumnHeader = ({ text }) => {
   return (
@@ -21,6 +24,7 @@ const TaskBoardColumnHeader = ({ text }) => {
 }
 
 const TaskBoardColumn = ({ boardId, tasksOnBoard, columnType }) => {
+  const dispatch = useDispatch()
 
   let text, classn, status;
   switch (columnType) {
@@ -42,8 +46,25 @@ const TaskBoardColumn = ({ boardId, tasksOnBoard, columnType }) => {
 
   const tasksToDisplay = tasksOnBoard.filter(task => task.status === status)
 
+  const [{ isOver, canDrop }, drop] = useDrop(
+    () => ({
+      accept: 'task',
+      canDrop: item => boardId === item.boardId,
+      drop: item => dispatch(updateTask({ id: item.taskId, status })),
+      collect: (monitor) => ({
+        isOver: !!monitor.isOver(),
+        canDrop: !!monitor.canDrop(),
+      }),
+    })
+  )
+
+  const columnClass = classNames({
+    [classn]: true,
+    'active': isOver && canDrop,
+  })
+
   return (
-    <div className={classn}>
+    <div ref={drop} className={columnClass}>
       <TaskBoardColumnHeader text={text} />
       {tasksToDisplay.map(task => <Task key={task.id} boardId={boardId} taskId={task.id} text={task.text} />)}
     </div>

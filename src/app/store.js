@@ -30,7 +30,7 @@ const preloadedState = {
     }
   },
   filters: {
-    currentUser: null,
+    currentUser: 3,
   }
 }
 
