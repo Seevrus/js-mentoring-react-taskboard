@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { HTML5Backend } from 'react-dnd-html5-backend'
 import { DndProvider } from 'react-dnd'
@@ -49,6 +49,12 @@ const AddTaksBoardForm = ({ currentUserId }) => {
 export const TaskBoardsList = () => {
   const taskBoards = useSelector(selectAllTaskBoardsByUserId)
   const currentUserId = useSelector(getCurrentUser)
+
+  useEffect(() => {
+    fetch("/api")
+      .then(res => res.json())
+      .then(data => console.log(data))
+  }, [])
 
   return (
     <div className="container">
