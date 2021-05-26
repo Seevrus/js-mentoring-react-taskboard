@@ -1,17 +1,18 @@
 import { useState } from "react"
 import classNames from 'classnames'
-import { selectAllUsers } from "./usersSlice"
-import { useDispatch, useSelector } from "react-redux"
+import { useDispatch } from "react-redux"
 import { signup } from "../users/usersSlice"
+import { useHistory } from "react-router"
+
 import { setCurrentUser } from "../filters/filtersSlice"
 
 export const SignupPage = () => {
   const dispatch = useDispatch()
+  const history = useHistory()
 
-  const allUsers = useSelector(selectAllUsers)
   const [userEmail, setUserName] = useState('')
   const [password, setPassword] = useState('')
-  const [valueError, setValueError] = useState(false)
+  const [valueError, setValueError] = useState('')
   const [success, setSuccess] = useState(false)
 
   const onUserNameChanged = e => {setUserName(e.target.value)}
@@ -22,15 +23,16 @@ export const SignupPage = () => {
     'muted-button': !canSubmit
   })
 
-  const onSubmitButtonClicked = e => {
-    const user = allUsers.find(user => user.email === userEmail)
-    if (user) {
-      setValueError(true)
+  const onSubmitButtonClicked = async e => {
+    setValueError('')
+    let res = await dispatch(signup({ email: userEmail, password }))
+    if (!!res.payload.error) {
+      setValueError(res.payload.error)
     }
     else {
-      setValueError(false)
-      dispatch(signup({ email: userEmail, password }))
       setSuccess(true)
+      dispatch(setCurrentUser(res.payload.id))
+      history.push('/taskboards')
     }
   }
 
@@ -62,7 +64,7 @@ export const SignupPage = () => {
           onClick={onSubmitButtonClicked}
           disabled={!canSubmit}>Signup</button>
       </form>
-      {valueError ? <span style={{ color: "red" }}>Incorrect email or password!</span> : null}
+      {!!valueError ? <span style={{ color: "red" }}>{valueError}</span> : null}
       {success ? <span style={{ color: "green" }}>Successfully signed up!</span> : null}
     </div>
   )

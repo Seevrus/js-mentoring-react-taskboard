@@ -1,0 +1,20 @@
+[
+  {
+    "id": 1,
+    "email": "WilliamWhite@rhyta.com",
+    "password": "11111951",
+    "loggedin": "false"
+  },
+  {
+    "id": 2,
+    "email": "TinaRaley@armyspy.com",
+    "password": "01111949",
+    "loggedin": "false"
+  },
+  {
+    "id": 3,
+    "email": "HarryBarns@dayrep.com",
+    "password": "12281996",
+    "loggedin": "false"
+  }
+]

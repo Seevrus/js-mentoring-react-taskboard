@@ -1,9 +1,13 @@
 const express = require('express')
-const app = express()
+const cors = require('cors')
 
-const taskBoards = [
-  { id: 1, name: "Board 1", userIds: [2, 3], taskIds: [1, 2, 3, 4, 5] },
-]
+const user = require('./routes/users')
+
+const app = express()
+app.use(cors())
+app.use(express.json())
+
+app.use('/api/users', user)
 
 app.get("/api", (req, res) => {
   res.json({ message: "Hello from server!" });
