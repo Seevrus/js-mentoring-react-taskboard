@@ -1,14 +1,14 @@
+import jwt from 'jsonwebtoken'
 import { useState } from "react"
 import classNames from 'classnames'
-import { selectAllUsers } from "./usersSlice"
-import { useDispatch, useSelector } from "react-redux"
+import { fetchUsers } from "./usersSlice"
+import { useDispatch } from "react-redux"
 import { login } from "../users/usersSlice"
 import { setCurrentUser } from "../filters/filtersSlice"
 
 export const LoginPage = () => {
   const dispatch = useDispatch()
 
-  const allUsers = useSelector(selectAllUsers)
   const [userEmail, setUserName] = useState('')
   const [password, setPassword] = useState('')
   const [valueError, setValueError] = useState(false)
@@ -21,18 +21,17 @@ export const LoginPage = () => {
     'muted-button': !canSubmit
   })
 
-  const onSubmitButtonClicked = e => {
-    const user = allUsers.find(user => user.email === userEmail)
-    if (!user) {
-      setValueError(true)
-    }
-    else if (user.password !== password) {
+  const onSubmitButtonClicked = async e => {
+    setValueError(false)
+    let res = await dispatch(login({ email: userEmail, password }))
+    if (!!res.payload.error) {
       setValueError(true)
     }
     else {
       setValueError(false)
-      dispatch(login(user.id))
-      dispatch(setCurrentUser(user.id))
+      await dispatch(fetchUsers())
+      const userId = jwt.decode(res.payload).id
+      dispatch(setCurrentUser(userId))
     }
   }
 

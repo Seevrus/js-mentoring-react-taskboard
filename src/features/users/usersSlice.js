@@ -1,8 +1,9 @@
 import {
   createSelector, 
   createSlice, 
-  createAsyncThunk} from "@reduxjs/toolkit";
+  createAsyncThunk} from "@reduxjs/toolkit"
 import axios from "axios";
+import setAuthToken from "../../utils/setAuthToken"
 
 const initialState = {
   users: [],
@@ -15,6 +16,37 @@ export const fetchUsers = createAsyncThunk(
   async () => {
     const response = await axios.get("http://localhost:3001/api/users")
     return response.data
+  }
+) 
+
+export const login = createAsyncThunk(
+  'users/login',
+  async (user, { rejectWithValue }) => {
+    try {
+      const response = await axios.post("http://localhost:3001/api/users/login", user)
+      const token = response.data
+      localStorage.setItem('jwt-token', token)
+      setAuthToken(token)
+      return response.data
+    }
+    catch (err) {
+      return rejectWithValue(err.response.data)
+    }
+  }
+)
+
+export const logout = createAsyncThunk(
+  'users/logout',
+  async (userId, { rejectWithValue }) => {
+    try {
+      const response = await axios.post("http://localhost:3001/api/users/logout", {userId})
+      localStorage.removeItem('jwt-token')
+      setAuthToken()
+      return response.data
+    }
+    catch (err) {
+      return rejectWithValue(err.response.data)
+    }
   }
 )
 
@@ -34,24 +66,17 @@ export const signup = createAsyncThunk(
 const usersSlice = createSlice({
   name: 'users',
   initialState,
-  reducers: {
-    login: (state, action) => {
-      const user = state.entities[action.payload]
-      if (user) {
-        user.loggedin = true
-      }
-    },
-  },
+  reducers: {},
   extraReducers: {
       [fetchUsers.fulfilled]: (state, action) => {
         state.users = action.payload
       },
+      [login.rejected]: (state, action) => {state.loginError = action.payload},
+      [logout.fulfilled]: (state, action) => {state.users = []},
       [signup.fulfilled]: (state, action) => {state.users.push(action.payload)},
       [signup.rejected]: (state, action) => {state.signupError = action.payload}
   }
 })
-
-export const { login } = usersSlice.actions
 
 export const selectUserById = (state, userId) => 
   state.users.users.find(user => user.id === userId)

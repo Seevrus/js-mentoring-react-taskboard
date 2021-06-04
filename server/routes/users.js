@@ -1,12 +1,17 @@
 const express = require('express')
 const fs = require('fs')
+const bcrypt = require('bcrypt')
+const jwt = require('jsonwebtoken')
+const config = require('../config')
 
 let router = express.Router()
 
 router.get('/', (req, res) => {
   let rawData = fs.readFileSync(__dirname + '/storedUsers.json')
   let users = JSON.parse(rawData)
-  res.status(200).json(users)
+  const usersRes = users.map(({ id, email, loggedin }) => ({ id, email, loggedin }))
+
+  res.status(200).json(usersRes)
 })
 
 router.post('/', (req, res) => {
@@ -22,14 +27,63 @@ router.post('/', (req, res) => {
   }
   else {
     const newId = users.reduce((maxId, user) => user.id > maxId ? user.id : maxId, -1) + 1
-    const newUser = {
-      id: newId,
-      email, password,
-      loggedin: false
-    }
-    users.push(newUser)
+
+    bcrypt.hash(password, 10, (err, hash) => {
+      const newUser = {
+        id: newId,
+        email,
+        password: hash,
+        loggedin: false
+      }
+      users.push(newUser)
+      fs.writeFileSync(__dirname + '/storedUsers.json', JSON.stringify(users, null, 2))
+      res.status(200).json(newUser)
+    })
+  }
+})
+
+router.post('/login', (req, res) => {
+  let rawData = fs.readFileSync(__dirname + '/storedUsers.json')
+  let users = JSON.parse(rawData)
+
+  const { email, password } = req.body
+  let user = users.find(user => user.email === email)
+  if (!user) {
+    res.status(401).json({ error: 'User not found!' })
+  }
+  else {
+    bcrypt.compare(password, user.password, function(err, result) {
+      if (!result) {
+        res.status(401).json({ error: 'Incorrect password!' })
+      }
+      else {
+        users = users.map(usr => usr.id === user.id ? { ...usr, loggedin: true } : usr)
+        fs.writeFileSync(__dirname + '/storedUsers.json', JSON.stringify(users, null, 2))
+
+        const userRes = (({ id, email, loggedin }) => ({ id, email, loggedin: !loggedin }))(user)
+        const token = jwt.sign(userRes, config.jwtSecret)
+        res.status(200).json(token)
+      }
+    })
+  }
+})
+
+router.post('/logout', (req, res) => {
+  let rawData = fs.readFileSync(__dirname + '/storedUsers.json')
+  let users = JSON.parse(rawData)
+
+  const { userId } = req.body
+  console.log(req.body)
+  let user = users.find(user => user.id === userId)
+  if (!user) {
+    res.status(404).json({ error: 'User not found!' })
+  }
+  else {
+    users = users.map(usr => usr.id === user.id ? { ...usr, loggedin: false } : usr)
     fs.writeFileSync(__dirname + '/storedUsers.json', JSON.stringify(users, null, 2))
-    res.status(200).json(newUser)
+
+    const logoutRes = { message: 'Logged out successfully' }
+    res.status(200).json(logoutRes)
   }
 })
 

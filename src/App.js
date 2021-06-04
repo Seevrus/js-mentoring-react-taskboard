@@ -1,4 +1,5 @@
-import React, { useEffect } from 'react';
+import jwt from 'jsonwebtoken'
+import React from 'react'
 import { 
   Redirect, 
   Route, 
@@ -11,20 +12,22 @@ import { SignupPage } from './features/users/SignupPage'
 import { TaskBoardsList } from './features/taskboards/TaskBoardsList'
 import { Logout } from './app/Logout'
 
-import { getCurrentUser } from './features/filters/filtersSlice'
-import { fetchUsers } from './features/users/usersSlice'
+import setAuthToken from "./utils/setAuthToken"
+import { getCurrentUser, setCurrentUser } from './features/filters/filtersSlice'
+import { fetchUsers } from "./features/users/usersSlice"
 
 function App() {
+  const dispatch = useDispatch()
+  const token = localStorage['jwt-token']
+  if (token) {
+    setAuthToken(token)
+    const userId = jwt.decode(token).id
+    dispatch(fetchUsers())
+      .then(dispatch(setCurrentUser(userId)))
+  }
+
   const currentUserId = useSelector(getCurrentUser)
   const isLoggedin = !!currentUserId
-
-  const dispatch = useDispatch()
-  useEffect(() => {
-    async function fillUsers() {
-      dispatch(fetchUsers())
-    }
-    fillUsers()
-  }, [dispatch])
 
   return (
     <Router>
