@@ -8,7 +8,7 @@ import { Task } from "./Task"
 import "./TaskBoard.css"
 import { BiPlus, BiTrash } from "react-icons/bi"
 import { CurrentUsers } from "./CurrentUsers"
-import { addTask, getMaxId, removeTask, updateTask, selectAllTasks } from "./tasksSlice"
+import { addTask, getMaxId, removeTask, updateTask, selectTasksByBoard } from "./tasksSlice"
 import { 
   addTask as addTaskToBoard, 
   removeBoard, 
@@ -89,7 +89,7 @@ const AddTaskForm = ({ boardId, hide }) => {
   const onAddTask = e => {
     if (e.keyCode === 13) {
       e.preventDefault();
-      dispatch(addTask({ id: maxId+1, text: e.target.value, status: "todo" }))
+      dispatch(addTask({ id: maxId+1, board: boardId, text: e.target.value, status: "todo" }))
       dispatch(addTaskToBoard({ boardId, taskId: maxId+1 }))
       hide(false)
     }
@@ -111,8 +111,7 @@ const AddTaskForm = ({ boardId, hide }) => {
 export const TaskBoard = ({ boardId, name, currentUser, userIds }) => {
   const dispatch = useDispatch();
   const taskIds = useSelector(state => selectAllTasksOnBoard(state, boardId))
-  const allTasks = useSelector(selectAllTasks)
-  const tasksOnBoard = allTasks.filter(task => taskIds.includes(task.id))
+  const tasksOnBoard = useSelector(state => selectTasksByBoard(state, boardId))
 
   const onRemoveBoard = e => {
     for (let id of taskIds) {

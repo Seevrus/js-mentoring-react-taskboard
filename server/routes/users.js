@@ -36,7 +36,7 @@ router.post('/', (req, res) => {
         loggedin: false
       }
       users.push(newUser)
-      fs.writeFileSync(__dirname + '/storedUsers.json', JSON.stringify(users, null, 2))
+      fs.writeFileSync(__dirname + '/storedUsers.json', JSON.stringify(users))
       res.status(200).json(newUser)
     })
   }
@@ -58,7 +58,7 @@ router.post('/login', (req, res) => {
       }
       else {
         users = users.map(usr => usr.id === user.id ? { ...usr, loggedin: true } : usr)
-        fs.writeFileSync(__dirname + '/storedUsers.json', JSON.stringify(users, null, 2))
+        fs.writeFileSync(__dirname + '/storedUsers.json', JSON.stringify(users))
 
         const userRes = (({ id, email, loggedin }) => ({ id, email, loggedin: !loggedin }))(user)
         const token = jwt.sign(userRes, config.jwtSecret)
@@ -80,7 +80,7 @@ router.post('/logout', (req, res) => {
   }
   else {
     users = users.map(usr => usr.id === user.id ? { ...usr, loggedin: false } : usr)
-    fs.writeFileSync(__dirname + '/storedUsers.json', JSON.stringify(users, null, 2))
+    fs.writeFileSync(__dirname + '/storedUsers.json', JSON.stringify(users))
 
     const logoutRes = { message: 'Logged out successfully' }
     res.status(200).json(logoutRes)

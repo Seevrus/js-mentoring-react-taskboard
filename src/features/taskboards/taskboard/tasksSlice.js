@@ -5,6 +5,7 @@
   entities: [
     {
       id:
+      boardId:
       text: "Task to do 1"
       status: "todo"
     },
@@ -35,9 +36,20 @@ const tasksSlice = createSlice({
   }
 })
 
-export const { 
+const { 
   selectAll: selectAllTasks,
 } = tasksAdapter.getSelectors(state => state.tasks)
+
+export const selectTasksByBoard = (state, boardId) => {
+  const tasksOnBoard = []
+  for (const taskId in state.tasks.entities) {
+    const task = state.tasks.entities[taskId]
+    if (task.boardId === boardId) {
+      tasksOnBoard.push({ ...task })
+    }
+  }
+  return tasksOnBoard
+}
 
 export const getMaxId = createSelector(
   selectAllTasks,

@@ -1,0 +1,7 @@
+[
+  { "id": 1, "text": "Task to do 1", "status": "todo" },
+  { "id": 2, "text": "Task to do 2", "status": "todo" },
+  { "id": 3, "text": "Task in progress", "status": "inProgress" },
+  { "id": 4, "text": "Done task", "status": "finished" },
+  { "id": 5, "text": "Finished task", "status": "finished" }
+]
