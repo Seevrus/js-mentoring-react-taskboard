@@ -1,10 +1,12 @@
 const express = require('express')
 const fs = require('fs')
+const authenticate = require('../middlewares/authenticate')
 
 const router = express.Router()
+router.use(authenticate)
 
-router.post('/', (req, res) => {
-  const { userId } = req.body
+router.get('/', (req, res) => {
+  const userId = req.userId
 
   const rawData = fs.readFileSync(__dirname + '/storedTaskBoards.json')
   const allTaskBoards = JSON.parse(rawData)

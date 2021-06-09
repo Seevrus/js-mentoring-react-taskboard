@@ -3,6 +3,7 @@ const fs = require('fs')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 const config = require('../config')
+const authenticate = require('../middlewares/authenticate')
 
 let router = express.Router()
 
@@ -68,11 +69,11 @@ router.post('/login', (req, res) => {
   }
 })
 
-router.post('/logout', (req, res) => {
+router.post('/logout', authenticate, (req, res) => {
   let rawData = fs.readFileSync(__dirname + '/storedUsers.json')
   let users = JSON.parse(rawData)
 
-  const { userId } = req.body
+  const userId = req.userId
   let user = users.find(user => user.id === userId)
   if (!user) {
     res.status(404).json({ error: 'User not found!' })

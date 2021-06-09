@@ -26,8 +26,8 @@ const initialState = taskBoardsAdapter.getInitialState()
 
 export const fetchTaskBoards = createAsyncThunk(
   'taskBoards/fetchTaskBoards',
-  async userId => {
-    const response = await axios.post("http://localhost:3001/api/taskBoards", { userId })
+  async () => {
+    const response = await axios.get("http://localhost:3001/api/taskBoards")
     return response.data
   }
 )
