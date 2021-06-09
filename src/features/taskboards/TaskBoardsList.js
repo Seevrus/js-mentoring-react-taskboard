@@ -1,12 +1,13 @@
 import { useEffect, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { shallowEqual, useDispatch, useSelector } from 'react-redux'
 import { HTML5Backend } from 'react-dnd-html5-backend'
 import { DndProvider } from 'react-dnd'
 import { TaskBoard } from './taskboard/TaskBoard'
 import { 
-  addBoard, 
+  addBoard,
+  fetchTaskBoards,
   getMaxId as getMaxBoardId, 
-  selectAllTaskBoardsByUserId } from './taskBoardsSlice'
+  selectAllTaskBoards} from './taskBoardsSlice'
 import { BiPlus } from "react-icons/bi"
 import { getCurrentUser } from '../filters/filtersSlice'
 
@@ -47,14 +48,18 @@ const AddTaksBoardForm = ({ currentUserId }) => {
 }
 
 export const TaskBoardsList = () => {
-  const taskBoards = useSelector(selectAllTaskBoardsByUserId)
+  const dispatch = useDispatch()
+
   const currentUserId = useSelector(getCurrentUser)
 
   useEffect(() => {
-    fetch("/api")
-      .then(res => res.json())
-      .then(data => console.log(data))
-  }, [])
+    async function fetchBoards() {
+      dispatch(fetchTaskBoards(currentUserId))
+    }
+    fetchBoards()
+  }, [dispatch, currentUserId])
+
+  const taskBoards = useSelector(selectAllTaskBoards, shallowEqual)
 
   return (
     <div className="container">

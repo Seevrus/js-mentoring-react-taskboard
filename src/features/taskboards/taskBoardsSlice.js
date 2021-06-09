@@ -14,10 +14,23 @@
 
  */
 
-import { createEntityAdapter, createSelector, createSlice } from "@reduxjs/toolkit";
+import { 
+  createAsyncThunk, 
+  createEntityAdapter, 
+  createSelector, 
+  createSlice } from "@reduxjs/toolkit"
+import axios from "axios"
 
 const taskBoardsAdapter = createEntityAdapter()
 const initialState = taskBoardsAdapter.getInitialState()
+
+export const fetchTaskBoards = createAsyncThunk(
+  'taskBoards/fetchTaskBoards',
+  async userId => {
+    const response = await axios.post("http://localhost:3001/api/taskBoards", { userId })
+    return response.data
+  }
+)
 
 const taskBoardsSlice = createSlice({
   name: 'taskBoards',
@@ -38,6 +51,7 @@ const taskBoardsSlice = createSlice({
         board.userIds.push(userId)
       }
     },
+    removeAllBoards: taskBoardsAdapter.removeAll,
     removeBoard: taskBoardsAdapter.removeOne,
     removeUser: (state, action) => {
       const { boardId, userId } = action.payload
@@ -53,6 +67,9 @@ const taskBoardsSlice = createSlice({
         board.taskIds = board.taskIds.filter(id => id !== taskId)
       }
     }
+  },
+  extraReducers: {
+    [fetchTaskBoards.fulfilled]: taskBoardsAdapter.addMany,
   }
 })
 
@@ -66,19 +83,20 @@ export const selectAllTasksOnBoard = createSelector(
   taskBoard => taskBoard.taskIds
 )
 
-export const selectAllTaskBoardsByUserId = createSelector(
-  selectAllTaskBoards,
-  state => state.filters,
-  (taskBoards, filters) => {
-    const userId = filters.currentUser;
-    return taskBoards.filter(board => board.userIds.includes(userId))
-  }
-)
+// export const selectAllTaskBoardsByUserId = createSelector(
+//   selectAllTaskBoards,
+//   state => state.filters,
+//   (taskBoards, filters) => {
+//     const userId = filters.currentUser;
+//     return taskBoards.filter(board => board.userIds.includes(userId))
+//   }
+// )
 
 export const { 
   addBoard,
   addTask,
-  addUser, 
+  addUser,
+  removeAllBoards,
   removeBoard, 
   removeUser, 
   removeTask 

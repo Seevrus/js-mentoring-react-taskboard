@@ -5,12 +5,6 @@ import usersSlice from '../features/users/usersSlice'
 import filtersSlice from '../features/filters/filtersSlice'
 
 const preloadedState = {
-  taskBoards: {
-    ids: [1],
-    entities: {
-      1: { id: 1, name: "Board 1", userIds: [2, 3] },
-    }
-  },
   tasks: {
     ids: [1, 2, 3, 4, 5],
     entities: {
