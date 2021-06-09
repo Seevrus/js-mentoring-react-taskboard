@@ -54,10 +54,10 @@ export const TaskBoardsList = () => {
 
   useEffect(() => {
     async function fetchBoards() {
-      dispatch(fetchTaskBoards(currentUserId))
+      dispatch(fetchTaskBoards())
     }
     fetchBoards()
-  }, [dispatch, currentUserId])
+  }, [dispatch])
 
   const taskBoards = useSelector(selectAllTaskBoards, shallowEqual)
 
