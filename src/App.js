@@ -1,11 +1,11 @@
 import jwt from 'jsonwebtoken'
-import React from 'react'
+import React, { useEffect } from 'react'
 import { 
   Redirect, 
   Route, 
   BrowserRouter as Router, 
   Switch } from 'react-router-dom'
-import { useDispatch, useSelector } from 'react-redux'
+import { shallowEqual, useDispatch, useSelector } from 'react-redux'
 import { Navbar } from './app/Navbar'
 import { LoginPage } from './features/users/LoginPage'
 import { SignupPage } from './features/users/SignupPage'
@@ -18,15 +18,18 @@ import { fetchUsers } from "./features/users/usersSlice"
 
 function App() {
   const dispatch = useDispatch()
-  const token = localStorage['jwt-token']
-  if (token) {
-    setAuthToken(token)
-    const userId = jwt.decode(token).id
-    dispatch(fetchUsers())
-      .then(dispatch(setCurrentUser(userId)))
-  }
 
-  const currentUserId = useSelector(getCurrentUser)
+  useEffect(() => {
+    const token = localStorage['jwt-token']
+    if (token) {
+      setAuthToken(token)
+      const userId = jwt.decode(token).id
+      dispatch(fetchUsers())
+        .then(dispatch(setCurrentUser(userId)))
+    }
+  }, [dispatch])
+
+  const currentUserId = useSelector(getCurrentUser, shallowEqual)
   const isLoggedin = !!currentUserId
 
   return (

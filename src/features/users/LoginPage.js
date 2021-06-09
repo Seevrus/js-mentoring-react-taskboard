@@ -29,9 +29,11 @@ export const LoginPage = () => {
     }
     else {
       setValueError(false)
-      await dispatch(fetchUsers())
-      const userId = jwt.decode(res.payload).id
-      dispatch(setCurrentUser(userId))
+      dispatch(fetchUsers())
+        .then(() => {
+          const userId = jwt.decode(res.payload).id
+          dispatch(setCurrentUser(userId))
+        })
     }
   }
 
