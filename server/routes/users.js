@@ -73,7 +73,6 @@ router.post('/logout', (req, res) => {
   let users = JSON.parse(rawData)
 
   const { userId } = req.body
-  console.log(req.body)
   let user = users.find(user => user.id === userId)
   if (!user) {
     res.status(404).json({ error: 'User not found!' })
