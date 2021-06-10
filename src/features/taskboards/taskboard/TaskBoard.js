@@ -8,11 +8,10 @@ import { Task } from "./Task"
 import "./TaskBoard.css"
 import { BiPlus, BiTrash } from "react-icons/bi"
 import { CurrentUsers } from "./CurrentUsers"
-import { addTask, getMaxId, removeTask, updateTask, selectTasksByBoard } from "./tasksSlice"
+import { addTask, getMaxId, removeAllTasksOnBoard, updateTask, selectTasksByBoard } from "./tasksSlice"
 import { 
   addTask as addTaskToBoard, 
-  removeBoard, 
-  selectAllTasksOnBoard } from "../taskBoardsSlice"
+  removeBoard } from "../taskBoardsSlice"
 
 const TaskBoardColumnHeader = ({ text }) => {
   return (
@@ -110,13 +109,10 @@ const AddTaskForm = ({ boardId, hide }) => {
 
 export const TaskBoard = ({ boardId, name, currentUser, userIds }) => {
   const dispatch = useDispatch();
-  const taskIds = useSelector(state => selectAllTasksOnBoard(state, boardId))
   const tasksOnBoard = useSelector(state => selectTasksByBoard(state, boardId))
 
   const onRemoveBoard = e => {
-    for (let id of taskIds) {
-      dispatch(removeTask(id))
-    }
+    dispatch(removeAllTasksOnBoard(boardId))
     dispatch(removeBoard(boardId))
   }
 

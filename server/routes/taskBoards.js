@@ -27,6 +27,7 @@ router.post('/', (req, res) => {
   ) + 1
 
   const boardName = req.body.boardName
+  // TODO: validate input
 
   const newBoard = {
     id: newBoardId,
@@ -37,6 +38,17 @@ router.post('/', (req, res) => {
   allTaskBoards.push(newBoard)
   fs.writeFileSync(__dirname + '/storedTaskBoards.json', JSON.stringify(allTaskBoards))
   res.status(200).json(newBoard)
+})
+
+router.delete('/:boardId', (req, res) => {
+  const rawData = fs.readFileSync(__dirname + '/storedTaskBoards.json')
+  const allTaskBoards = JSON.parse(rawData)
+
+  const { boardId } = req.params
+  const remaining = allTaskBoards.filter(taskBoard => taskBoard.id !== Number(boardId))
+
+  fs.writeFileSync(__dirname + '/storedTaskBoards.json', JSON.stringify(remaining))
+  res.status(200).json(boardId)
 })
 
 module.exports = router

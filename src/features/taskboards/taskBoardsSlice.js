@@ -15,9 +15,8 @@
  */
 
 import { 
-  createAsyncThunk, 
+  createAsyncThunk,
   createEntityAdapter, 
-  createSelector, 
   createSlice } from "@reduxjs/toolkit"
 import axios from "axios"
 
@@ -41,11 +40,18 @@ export const fetchTaskBoards = createAsyncThunk(
   }
 )
 
+export const removeBoard = createAsyncThunk(
+  'taskBoards/removeBoard',
+  async boardId => {
+    const response = await axios.delete(`http://localhost:3001/api/taskBoards/${boardId}`)
+    return response.data
+  }
+)
+
 const taskBoardsSlice = createSlice({
   name: 'taskBoards',
   initialState,
   reducers: {
-    addBoard: taskBoardsAdapter.addOne,
     addTask: (state, action) => {
       const { boardId, taskId } = action.payload
       const board = state.entities[boardId]
@@ -61,7 +67,6 @@ const taskBoardsSlice = createSlice({
       }
     },
     removeAllBoards: taskBoardsAdapter.removeAll,
-    removeBoard: taskBoardsAdapter.removeOne,
     removeUser: (state, action) => {
       const { boardId, userId } = action.payload
       const board = state.entities[boardId]
@@ -80,6 +85,7 @@ const taskBoardsSlice = createSlice({
   extraReducers: {
     [addBoard.fulfilled]: taskBoardsAdapter.addOne,
     [fetchTaskBoards.fulfilled]: taskBoardsAdapter.addMany,
+    [removeBoard.fulfilled]: taskBoardsAdapter.removeOne,
   }
 })
 
@@ -88,16 +94,15 @@ export const {
   selectById: selectTaskBoard,
 } = taskBoardsAdapter.getSelectors(state => state.taskBoards)
 
-export const selectAllTasksOnBoard = createSelector(
-  selectTaskBoard,
-  taskBoard => taskBoard.taskIds
-)
+// export const selectAllTasksOnBoard = createSelector(
+//   selectTaskBoard,
+//   taskBoard => taskBoard.taskIds
+// )
 
 export const { 
   addTask,
   addUser,
   removeAllBoards,
-  removeBoard, 
   removeUser, 
   removeTask 
 } = taskBoardsSlice.actions
