@@ -6,7 +6,6 @@ import { TaskBoard } from './taskboard/TaskBoard'
 import { 
   addBoard,
   fetchTaskBoards,
-  getMaxId as getMaxBoardId, 
   selectAllTaskBoards} from './taskBoardsSlice'
 import { BiPlus } from "react-icons/bi"
 import { getCurrentUser } from '../filters/filtersSlice'
@@ -14,13 +13,12 @@ import { getCurrentUser } from '../filters/filtersSlice'
 const AddTaksBoardForm = ({ currentUserId }) => {
   const [addBoardFormVisible, setAddBoardFormVisible] = useState(false)
   const [boardName, setBoardName] = useState('')
-  const maxBoardId = useSelector(getMaxBoardId)
 
   const dispatch = useDispatch()
   const onAddBoard = e => {
     if (e.keyCode === 13) {
       e.preventDefault();
-      dispatch(addBoard({ id: maxBoardId+1, name: e.target.value, userIds: [currentUserId], taskIds: [] }))
+      dispatch(addBoard(e.target.value))
       setAddBoardFormVisible(false)
     }
   }

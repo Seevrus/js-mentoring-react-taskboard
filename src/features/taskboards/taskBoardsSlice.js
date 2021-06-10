@@ -5,8 +5,8 @@
   entities: [
     {
       id:
+      name: "..."
       userIds: [<userId>, <userId>, ...]
-      taskIds: [<taskId>, <taskId>, ...]
     },
     ...
   ]
@@ -23,6 +23,15 @@ import axios from "axios"
 
 const taskBoardsAdapter = createEntityAdapter()
 const initialState = taskBoardsAdapter.getInitialState()
+
+export const addBoard = createAsyncThunk(
+  'taskBoards/addBoard',
+  async boardName => {
+    console.log(boardName)
+    const response = await axios.post("http://localhost:3001/api/taskBoards", { boardName })
+    return response.data
+  }
+)
 
 export const fetchTaskBoards = createAsyncThunk(
   'taskBoards/fetchTaskBoards',
@@ -69,6 +78,7 @@ const taskBoardsSlice = createSlice({
     }
   },
   extraReducers: {
+    [addBoard.fulfilled]: taskBoardsAdapter.addOne,
     [fetchTaskBoards.fulfilled]: taskBoardsAdapter.addMany,
   }
 })
@@ -83,17 +93,7 @@ export const selectAllTasksOnBoard = createSelector(
   taskBoard => taskBoard.taskIds
 )
 
-// export const selectAllTaskBoardsByUserId = createSelector(
-//   selectAllTaskBoards,
-//   state => state.filters,
-//   (taskBoards, filters) => {
-//     const userId = filters.currentUser;
-//     return taskBoards.filter(board => board.userIds.includes(userId))
-//   }
-// )
-
 export const { 
-  addBoard,
   addTask,
   addUser,
   removeAllBoards,
@@ -102,9 +102,9 @@ export const {
   removeTask 
 } = taskBoardsSlice.actions
 
-export const getMaxId = createSelector(
-  selectAllTaskBoards,
-  taskBoards => taskBoards.reduce((board, maxId) => board.id > maxId ? board.id : maxId, -1).id
-)
+// export const getMaxId = createSelector(
+//   selectAllTaskBoards,
+//   taskBoards => taskBoards.reduce((board, maxId) => board.id > maxId ? board.id : maxId, -1).id
+// )
 
 export default taskBoardsSlice.reducer
