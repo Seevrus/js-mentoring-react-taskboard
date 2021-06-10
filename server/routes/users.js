@@ -7,7 +7,7 @@ const authenticate = require('../middlewares/authenticate')
 
 let router = express.Router()
 
-router.get('/signup', (req, res) => {
+router.get('/', (req, res) => {
   let rawData = fs.readFileSync(__dirname + '/storedUsers.json')
   let users = JSON.parse(rawData)
   const usersRes = users.map(({ id, email, loggedin }) => ({ id, email, loggedin }))
@@ -15,7 +15,7 @@ router.get('/signup', (req, res) => {
   res.status(200).json(usersRes)
 })
 
-router.post('/', (req, res) => {
+router.post('/signup', (req, res) => {
   const { email, password } = req.body
   // TODO: validate input
 
