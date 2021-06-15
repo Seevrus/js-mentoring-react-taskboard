@@ -48,6 +48,13 @@ export const removeBoard = createAsyncThunk(
   }
 )
 
+export const removeUserFromBoard = createAsyncThunk(
+  'taskBoards/removeUserFromBoard',
+  async userId => {
+    
+  }
+)
+
 const taskBoardsSlice = createSlice({
   name: 'taskBoards',
   initialState,

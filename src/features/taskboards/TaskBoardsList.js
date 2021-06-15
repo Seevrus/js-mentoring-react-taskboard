@@ -10,7 +10,7 @@ import {
 import { BiPlus } from "react-icons/bi"
 import { getCurrentUser } from '../filters/filtersSlice'
 
-const AddTaksBoardForm = ({ currentUserId }) => {
+const AddTaskBoardForm = () => {
   const [addBoardFormVisible, setAddBoardFormVisible] = useState(false)
   const [boardName, setBoardName] = useState('')
 
@@ -73,7 +73,7 @@ export const TaskBoardsList = () => {
           </DndProvider>
         )
       })}
-      <AddTaksBoardForm currentUserId={currentUserId} />
+      <AddTaskBoardForm />
     </div>
   )
 
