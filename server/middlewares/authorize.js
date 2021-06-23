@@ -1,16 +1,10 @@
 const jwt = require("jsonwebtoken")
-const config = require('../config')
 
-const authenticate = (req, res, next) => {
-  const authHeader = req.headers['authorization']
-
-  let token
-  if (authHeader) {
-    token = authHeader.split(' ')[1]
-  }
+const authorizeUser = (req, res, next) => {
+  const token = req.cookies.token
 
   if (token) {
-    jwt.verify(token, config.jwtSecret, (err, decoded) => {
+    jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, decoded) => {
       if (err) {
         res.status(401).json({
           error: "You are not authorized to view this page!"
@@ -30,4 +24,4 @@ const authenticate = (req, res, next) => {
   }
 }
 
-module.exports = authenticate
+module.exports = authorizeUser

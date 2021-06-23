@@ -1,0 +1,25 @@
+GET http://localhost:3001/api
+
+###
+
+POST http://localhost:3001/api/users/login
+Content-Type: application/json
+
+{
+  "email": "HarryBarns@dayrep.com",
+  "password": "password"
+}
+
+###
+
+POST http://localhost:3001/auth
+Content-Type: application/json
+
+{
+  "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MywiZW1haWwiOiJIYXJyeUJhcm5zQGRheXJlcC5jb20iLCJsb2dnZWRpbiI6ZmFsc2UsImlhdCI6MTYyMzkzODg2OH0.DKZT7yUNfw2C1xt7FxvK07BtXYl6HBFyc9_ePhW7bA4"
+}
+
+###
+
+GET http://localhost:3001/api/taskboards
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MywiZW1haWwiOiJIYXJyeUJhcm5zQGRheXJlcC5jb20iLCJsb2dnZWRpbiI6ZmFsc2UsImlhdCI6MTYyMzkzOTA3NSwiZXhwIjoxNjIzOTM5MTA1fQ.cd8HpL5QqhZkJObTKyl2gpGuRA93nsI902YSCl7I0OY

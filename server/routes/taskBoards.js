@@ -1,9 +1,9 @@
 const express = require('express')
 const fs = require('fs')
-const authenticate = require('../middlewares/authenticate')
+const authorizeUser = require('../middlewares/authorize')
 
 const router = express.Router()
-router.use(authenticate)
+router.use(authorizeUser)
 
 router.get('/', (req, res) => {
   const userId = req.userId

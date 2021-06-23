@@ -1,4 +1,3 @@
-import jwt from 'jsonwebtoken'
 import React, { useEffect } from 'react'
 import { 
   Redirect, 
@@ -11,22 +10,20 @@ import { LoginPage } from './features/users/LoginPage'
 import { SignupPage } from './features/users/SignupPage'
 import { TaskBoardsList } from './features/taskboards/TaskBoardsList'
 import { Logout } from './app/Logout'
-
-import setAuthToken from "./utils/setAuthToken"
 import { getCurrentUser, setCurrentUser } from './features/filters/filtersSlice'
-import { fetchUsers } from "./features/users/usersSlice"
+import { checkLoginStatus, fetchUsers } from "./features/users/usersSlice"
 
 function App() {
   const dispatch = useDispatch()
 
   useEffect(() => {
-    const token = localStorage['jwt-token']
-    if (token) {
-      setAuthToken(token)
-      const userId = jwt.decode(token).id
-      dispatch(fetchUsers())
-        .then(dispatch(setCurrentUser(userId)))
-    }
+    dispatch(checkLoginStatus())
+      .then(res => {
+        if (!res.payload.error) {
+          dispatch(fetchUsers())
+            .then(dispatch(setCurrentUser(res.payload.id)))
+        }
+      })
   }, [dispatch])
 
   const currentUserId = useSelector(getCurrentUser, shallowEqual)

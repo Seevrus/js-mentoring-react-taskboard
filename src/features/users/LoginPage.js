@@ -1,4 +1,3 @@
-import jwt from 'jsonwebtoken'
 import { useState } from "react"
 import classNames from 'classnames'
 import { fetchUsers } from "./usersSlice"
@@ -22,6 +21,8 @@ export const LoginPage = () => {
   })
 
   const onSubmitButtonClicked = async e => {
+    // TODO: sometimes could not proxy requests
+    e.preventDefault()
     setValueError(false)
     let res = await dispatch(login({ email: userEmail, password }))
     if (!!res.payload.error) {
@@ -31,7 +32,7 @@ export const LoginPage = () => {
       setValueError(false)
       dispatch(fetchUsers())
         .then(() => {
-          const userId = jwt.decode(res.payload).id
+          const userId = res.payload.id
           dispatch(setCurrentUser(userId))
         })
     }

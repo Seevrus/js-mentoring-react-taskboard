@@ -27,7 +27,7 @@ export const addBoard = createAsyncThunk(
   'taskBoards/addBoard',
   async boardName => {
     console.log(boardName)
-    const response = await axios.post("http://localhost:3001/api/taskBoards", { boardName })
+    const response = await axios.post("/api/taskBoards", { boardName })
     return response.data
   }
 )
@@ -35,7 +35,7 @@ export const addBoard = createAsyncThunk(
 export const fetchTaskBoards = createAsyncThunk(
   'taskBoards/fetchTaskBoards',
   async () => {
-    const response = await axios.get("http://localhost:3001/api/taskBoards")
+    const response = await axios.get("/api/taskBoards")
     return response.data
   }
 )
@@ -43,7 +43,7 @@ export const fetchTaskBoards = createAsyncThunk(
 export const removeBoard = createAsyncThunk(
   'taskBoards/removeBoard',
   async boardId => {
-    const response = await axios.delete(`http://localhost:3001/api/taskBoards/${boardId}`)
+    const response = await axios.delete(`/api/taskBoards/${boardId}`)
     return response.data
   }
 )

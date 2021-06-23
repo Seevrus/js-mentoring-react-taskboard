@@ -1,9 +1,10 @@
+require('dotenv').config()
+
 const express = require('express')
 const fs = require('fs')
 const bcrypt = require('bcrypt')
-const jwt = require('jsonwebtoken')
-const config = require('../config')
-const authenticate = require('../middlewares/authenticate')
+const authorizeUser = require('../middlewares/authorize')
+const { signToken } = require('./tokens')
 
 let router = express.Router()
 
@@ -27,7 +28,7 @@ router.post('/signup', (req, res) => {
     res.status(400).json({ error: 'Email is already in use!' })
   }
   else {
-    const newId = users.reduce((maxId, user) => user.id > maxId ? user.id : maxId, -1) + 1
+    const newId = users.reduce((maxId, user) => user.id > maxId ? user.id : maxId, 0) + 1
 
     bcrypt.hash(password, 10, (err, hash) => {
       const newUser = {
@@ -62,14 +63,22 @@ router.post('/login', (req, res) => {
         fs.writeFileSync(__dirname + '/storedUsers.json', JSON.stringify(users))
 
         const userRes = (({ id, email, loggedin }) => ({ id, email, loggedin: !loggedin }))(user)
-        const token = jwt.sign(userRes, config.jwtSecret)
-        res.status(200).json(token)
+
+        const accessToken = signToken(userRes)
+        res.cookie(
+          'token',
+          accessToken,
+          {
+            httpOnly: true,
+            maxAge: 1 * 60 * 60 * 1000,
+          })
+        res.status(200).json({ success: "User sucessfully logged in!", id: userRes.id })
       }
     })
   }
 })
 
-router.post('/logout', authenticate, (req, res) => {
+router.post('/logout', authorizeUser, (req, res) => {
   let rawData = fs.readFileSync(__dirname + '/storedUsers.json')
   let users = JSON.parse(rawData)
 
@@ -83,6 +92,7 @@ router.post('/logout', authenticate, (req, res) => {
     fs.writeFileSync(__dirname + '/storedUsers.json', JSON.stringify(users))
 
     const logoutRes = { message: 'Logged out successfully' }
+    res.clearCookie('token')
     res.status(200).json(logoutRes)
   }
 })
