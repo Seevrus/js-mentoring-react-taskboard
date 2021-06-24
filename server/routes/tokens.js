@@ -20,7 +20,7 @@ router.get('/checkstatus', (req, res) => {
     jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, decoded) => {
       if (err) {
         res.status(200).json({
-          error: "You are not authorized to view this page!"
+          error: "You are currently not signed in!"
         })
       }
       else {
@@ -31,7 +31,7 @@ router.get('/checkstatus', (req, res) => {
   }
   else {
     res.status(200).json({
-      error: "You are not authorized to view this page!"
+      error: "You are currently not signed in!"
     })
   }
 })

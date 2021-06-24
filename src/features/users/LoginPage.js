@@ -2,11 +2,13 @@ import { useState } from "react"
 import classNames from 'classnames'
 import { fetchUsers } from "./usersSlice"
 import { useDispatch } from "react-redux"
+import { useHistory } from "react-router"
 import { login } from "../users/usersSlice"
 import { setCurrentUser } from "../filters/filtersSlice"
 
 export const LoginPage = () => {
   const dispatch = useDispatch()
+  const history = useHistory()
 
   const [userEmail, setUserName] = useState('')
   const [password, setPassword] = useState('')
@@ -34,6 +36,7 @@ export const LoginPage = () => {
         .then(() => {
           const userId = res.payload.id
           dispatch(setCurrentUser(userId))
+          history.push('/taskboards')
         })
     }
   }
