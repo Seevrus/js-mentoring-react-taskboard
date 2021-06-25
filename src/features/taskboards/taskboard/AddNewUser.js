@@ -31,7 +31,7 @@ export const AddNewUser = ({ boardId, currentUser, userIds }) => {
     <div className="flex-container flex-column pos-rel">
       <input
         className="add-new-user"
-        id="search-email"
+        id={`search-email-${boardId}`}
         name="search-email"
         value={searchString}
         onFocus={() => setDisplay(true)}
