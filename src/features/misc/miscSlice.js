@@ -2,9 +2,7 @@ import axios from "axios"
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit"
 import { setCsrfToken } from "./setCsrfToken"
 
-const initialState = {
-  csrf: null
-}
+const initialState = {}
 
 export const fetchCsrfToken = createAsyncThunk(
   'misc/fetchCsrfToken',
@@ -22,7 +20,6 @@ const miscSlice = createSlice({
     [fetchCsrfToken.fulfilled]: (state, action) => {
       const token = action.payload.csrfToken
       setCsrfToken(token)
-      state.csrf = token
     }
   }
 })
