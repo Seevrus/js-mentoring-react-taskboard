@@ -12,11 +12,13 @@ import { TaskBoardsList } from './features/taskboards/TaskBoardsList'
 import { Logout } from './app/Logout'
 import { getCurrentUser, setCurrentUser } from './features/filters/filtersSlice'
 import { checkLoginStatus, fetchUsers } from "./features/users/usersSlice"
+import { fetchCsrfToken } from './features/misc/miscSlice'
 
 function App() {
   const dispatch = useDispatch()
 
   useEffect(() => {
+    dispatch(fetchCsrfToken())
     dispatch(checkLoginStatus())
       .then(res => {
         if (!res.payload.error) {

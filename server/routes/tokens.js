@@ -13,6 +13,10 @@ const signToken = user => {
 
 const router = express.Router()
 
+router.get('/csrf-token', (req, res) => {
+  res.json({ csrfToken: req.csrfToken() });
+})
+
 router.get('/checkstatus', (req, res) => {
   const token = req.cookies.token
 

@@ -1,14 +1,20 @@
 const express = require('express')
 const cookieParser = require('cookie-parser')
 const cors = require('cors')
+const csurf = require('csurf')
+
+const csurfProtection = csurf({
+  cookie: true
+})
 
 const { router: token } = require('./routes/tokens')
 const user = require('./routes/users')
 const taskBoards = require('./routes/taskBoards')
 
 const app = express()
-app.use(cors())
 app.use(cookieParser())
+app.use(cors())
+app.use(csurfProtection)
 app.use(express.json())
 
 app.use('/api/users', user)

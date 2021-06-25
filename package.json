@@ -4,7 +4,7 @@
   "private": true,
   "proxy": "http://localhost:3001",
   "scripts": {
-    "serve": "nodemon --watch ./server ./server/index.js",
+    "serve": "nodemon --watch ./server --ignore *.json ./server/index.js",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
@@ -31,6 +31,7 @@
     "bcrypt": "^5.0.1",
     "classnames": "^2.3.1",
     "cookie-parser": "^1.4.5",
+    "csurf": "^1.11.0",
     "dotenv": "^10.0.0",
     "express": "^4.17.1",
     "jsonwebtoken": "^8.5.1",

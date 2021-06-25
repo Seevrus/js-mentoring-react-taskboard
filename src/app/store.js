@@ -3,6 +3,7 @@ import tasksSlice from '../features/taskboards/taskboard/tasksSlice';
 import taskBoardsSlice from '../features/taskboards/taskBoardsSlice';
 import usersSlice from '../features/users/usersSlice'
 import filtersSlice from '../features/filters/filtersSlice'
+import miscSlice from '../features/misc/miscSlice';
 
 const preloadedState = {
   tasks: {
@@ -26,6 +27,7 @@ export const store = configureStore({
     taskBoards: taskBoardsSlice,
     tasks: tasksSlice,
     filters: filtersSlice,
+    misc: miscSlice,
   },
   preloadedState
 });

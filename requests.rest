@@ -23,3 +23,6 @@ Content-Type: application/json
 
 GET http://localhost:3001/api/taskboards
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MywiZW1haWwiOiJIYXJyeUJhcm5zQGRheXJlcC5jb20iLCJsb2dnZWRpbiI6ZmFsc2UsImlhdCI6MTYyMzkzOTA3NSwiZXhwIjoxNjIzOTM5MTA1fQ.cd8HpL5QqhZkJObTKyl2gpGuRA93nsI902YSCl7I0OY
+
+###
+GET http://localhost:3001/api/auth/csrf-token
