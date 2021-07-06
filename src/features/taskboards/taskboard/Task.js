@@ -3,14 +3,13 @@ import { useDispatch } from "react-redux"
 import { useDrag } from 'react-dnd'
 import { BiTrash } from "react-icons/bi"
 import { removeTask } from './tasksSlice'
-import { removeTask as removeTaskFromBoard } from '../taskBoardsSlice'
 
-export const Task = ({ boardId, taskId, text }) => {
+export const Task = ({ boardId, setTasks, taskId, text }) => {
   const dispatch = useDispatch()
 
   const onTaskRemove = e => {
-    dispatch(removeTaskFromBoard({ boardId, taskId }))
-    dispatch(removeTask(taskId))
+    dispatch(removeTask({ boardId, taskId }))
+      .then(res => setTasks(res.payload))
   }
 
   const [{ isDragging }, drag] = useDrag(() => ({

@@ -10,6 +10,7 @@ const csurfProtection = csurf({
 const { router: token } = require('./routes/tokens')
 const user = require('./routes/users')
 const taskBoards = require('./routes/taskBoards')
+const tasks = require('./routes/tasks')
 
 const app = express()
 app.use(cookieParser())
@@ -19,6 +20,7 @@ app.use(express.json())
 
 app.use('/api/users', user)
 app.use('/api/taskboards', taskBoards)
+app.use('/api/tasks', tasks)
 app.use('/api/auth', token)
 
 app.get("/api", (req, res) => {

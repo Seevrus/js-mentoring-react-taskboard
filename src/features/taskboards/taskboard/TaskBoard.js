@@ -1,5 +1,5 @@
-import { useState } from "react"
-import { useDispatch, useSelector } from "react-redux"
+import { useEffect, useState } from "react"
+import { useDispatch } from "react-redux"
 import { useDrop } from 'react-dnd'
 import classNames from 'classnames'
 
@@ -8,10 +8,8 @@ import { Task } from "./Task"
 import "./TaskBoard.css"
 import { BiPlus, BiTrash } from "react-icons/bi"
 import { CurrentUsers } from "./CurrentUsers"
-import { addTask, getMaxId, removeAllTasksOnBoard, updateTask, selectTasksByBoard } from "./tasksSlice"
-import { 
-  addTask as addTaskToBoard, 
-  removeBoard } from "../taskBoardsSlice"
+import { addTask, removeAllTasksOnBoard, updateTask, fetchTasks } from "./tasksSlice"
+import { removeBoard } from "../taskBoardsSlice"
 
 const TaskBoardColumnHeader = ({ text }) => {
   return (
@@ -22,7 +20,7 @@ const TaskBoardColumnHeader = ({ text }) => {
   )
 }
 
-const TaskBoardColumn = ({ boardId, tasksOnBoard, columnType }) => {
+const TaskBoardColumn = ({ boardId, setTasks, tasksOnBoard, columnType }) => {
   const dispatch = useDispatch()
 
   let text, classn, status;
@@ -49,7 +47,10 @@ const TaskBoardColumn = ({ boardId, tasksOnBoard, columnType }) => {
     () => ({
       accept: 'task',
       canDrop: item => boardId === item.boardId,
-      drop: item => dispatch(updateTask({ id: item.taskId, status })),
+      drop: item => {
+        dispatch(updateTask({ id: item.taskId, boardId: item.boardId, status }))
+          .then(res => setTasks(res.payload))
+      },
       collect: (monitor) => ({
         isOver: !!monitor.isOver(),
         canDrop: !!monitor.canDrop(),
@@ -65,31 +66,54 @@ const TaskBoardColumn = ({ boardId, tasksOnBoard, columnType }) => {
   return (
     <div ref={drop} className={columnClass}>
       <TaskBoardColumnHeader text={text} />
-      {tasksToDisplay.map(task => <Task key={task.id} boardId={boardId} taskId={task.id} text={task.text} />)}
+      {tasksToDisplay.map(task => 
+        <Task
+          key={task.id}
+          boardId={boardId}
+          setTasks={setTasks}
+          taskId={task.id}
+          text={task.text}
+        />
+      )}
     </div>
   )
 }
 
-const TaskBoardBody = ({ boardId, tasksOnBoard }) => {
+const TaskBoardBody = ({ boardId, setTasks, tasksOnBoard }) => {
   return (
     <div className="grid-container">
-      <TaskBoardColumn boardId={boardId} tasksOnBoard={tasksOnBoard} columnType="" />
-      <TaskBoardColumn boardId={boardId} tasksOnBoard={tasksOnBoard} columnType="inProgress" />
-      <TaskBoardColumn boardId={boardId} tasksOnBoard={tasksOnBoard} columnType="finished" />
+      <TaskBoardColumn
+        boardId={boardId}
+        setTasks={setTasks}
+        tasksOnBoard={tasksOnBoard}
+        columnType=""
+      />
+      <TaskBoardColumn
+        boardId={boardId}
+        setTasks={setTasks}
+        tasksOnBoard={tasksOnBoard}
+        columnType="inProgress"
+      />
+      <TaskBoardColumn
+        boardId={boardId}
+        setTasks={setTasks}
+        tasksOnBoard={tasksOnBoard}
+        columnType="finished"
+      />
     </div>
   )
 }
 
-const AddTaskForm = ({ boardId, hide }) => {
+const AddTaskForm = ({ boardId, hide, setTasks }) => {
   const [taskName, setTaskName] = useState('')
-  const maxId = useSelector(getMaxId)
 
   const dispatch = useDispatch();
   const onAddTask = e => {
     if (e.keyCode === 13) {
       e.preventDefault();
-      dispatch(addTask({ id: maxId+1, board: boardId, text: e.target.value, status: "todo" }))
-      dispatch(addTaskToBoard({ boardId, taskId: maxId+1 }))
+      dispatch(addTask({ boardId, text: e.target.value }))
+        .then(() => dispatch(fetchTasks(boardId))
+          .then(res => setTasks(res.payload)))
       hide(false)
     }
   }
@@ -109,7 +133,12 @@ const AddTaskForm = ({ boardId, hide }) => {
 
 export const TaskBoard = ({ boardId, name, currentUser, userIds }) => {
   const dispatch = useDispatch();
-  const tasksOnBoard = useSelector(state => selectTasksByBoard(state, boardId))
+  const [tasks, setTasks] = useState([])
+
+  useEffect(() => {
+    dispatch(fetchTasks(boardId))
+      .then(res => setTasks(res.payload))
+  }, [boardId, dispatch])
 
   const onRemoveBoard = e => {
     dispatch(removeAllTasksOnBoard(boardId))
@@ -122,7 +151,7 @@ export const TaskBoard = ({ boardId, name, currentUser, userIds }) => {
       <h2>{name}</h2>
       <AddNewUser boardId={boardId} currentUser={currentUser} userIds={userIds} />
       <CurrentUsers boardId={boardId} userIds={userIds} />
-      <TaskBoardBody boardId={boardId} tasksOnBoard={tasksOnBoard} />
+      <TaskBoardBody boardId={boardId} setTasks={setTasks} tasksOnBoard={tasks} />
       <div className="control-buttons">
         <button className="task-button delete-task" onClick={onRemoveBoard}>
           <BiTrash />
@@ -133,7 +162,12 @@ export const TaskBoard = ({ boardId, name, currentUser, userIds }) => {
           <span>Add task</span>
         </button>
       </div>
-      {addTaskVisible ? <AddTaskForm boardId={boardId} hide={setAddTaskVisible} /> : null}
+      {addTaskVisible && 
+        <AddTaskForm 
+          boardId={boardId} 
+          hide={setAddTaskVisible}
+          setTasks={setTasks}
+        />}
     </div>
   )
 }

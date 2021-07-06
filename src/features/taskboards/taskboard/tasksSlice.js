@@ -15,59 +15,66 @@
 
  */
 
-import { createEntityAdapter, createSelector, createSlice } from "@reduxjs/toolkit";
+import {
+  createAsyncThunk,
+  createEntityAdapter,
+  createSlice } from "@reduxjs/toolkit";
+import axios from "axios"
 
 const tasksAdapter = createEntityAdapter()
 const initialState = tasksAdapter.getInitialState()
 
+export const addTask = createAsyncThunk(
+  'tasks/addTask',
+  async ({ boardId, text }) => {
+    const response = await axios.post("/api/tasks", { boardId, text })
+    return response.data
+  }
+)
+
+export const fetchTasks = createAsyncThunk(
+  'tasks/fetchTasks',
+  async boardId => {
+    const response = await axios.get(`/api/tasks/${boardId}`)
+    return response.data
+  }
+)
+
+export const removeAllTasksOnBoard = createAsyncThunk(
+  'tasks/removeAllTasksOnBoard',
+  async boardId => {
+    const response = await axios.delete(`/api/tasks/all/${boardId}`)
+    return response.data
+  }
+)
+
+export const removeTask = createAsyncThunk(
+  'tasks/removeTask',
+  async ({boardId, taskId}) => {
+    const response = await axios.delete(`/api/tasks/${boardId}-${taskId}`)
+    return response.data
+  }
+)
+
+export const updateTask = createAsyncThunk(
+  'tasks/updateTask',
+  async ({ id, boardId, status }) => {
+    const response = await axios.post('/api/tasks/update', { id, boardId, status })
+    return response.data
+  }
+)
+
 const tasksSlice = createSlice({
   name: 'tasks',
   initialState,
-  reducers: {
-    addTask: tasksAdapter.addOne,
-    removeAllTasksOnBoard: (state, action) => {
-      const { boardId } = action.payload
-      for (const taskId of state.ids) {
-        if (state.entities[taskId].boardId === boardId) {
-          tasksAdapter.removeOne(taskId)
-        }
-      }
-    },
-    removeTask: tasksAdapter.removeOne,
-    updateTask: (state, action) => {
-      const { id, status } = action.payload
-      const existingTodo = state.entities[id]
-      if (existingTodo) {
-        existingTodo.status = status
-      }
-    },
+  reducers: {},
+  extraReducers: {
+    [addTask.fulfilled]: tasksAdapter.addOne,
+    [fetchTasks.fulfilled]: tasksAdapter.addMany,
+    [removeAllTasksOnBoard.fulfilled]: tasksAdapter.removeMany,
+    [removeTask.fulfilled]: tasksAdapter.updateMany,
+    [updateTask.fulfilled]: tasksAdapter.updateMany,
   }
 })
-
-const { 
-  selectAll: selectAllTasks,
-} = tasksAdapter.getSelectors(state => state.tasks)
-
-export const selectTasksByBoard = (state, boardId) => {
-  const tasksOnBoard = []
-  for (const taskId in state.tasks.entities) {
-    const task = state.tasks.entities[taskId]
-    if (task.boardId === boardId) {
-      tasksOnBoard.push({ ...task })
-    }
-  }
-  return tasksOnBoard
-}
-
-export const getMaxId = createSelector(
-  selectAllTasks,
-  tasks => tasks.reduce((task, maxId) => task.id > maxId ? task.id : maxId, -1).id
-)
-
-export const { 
-  addTask,
-  removeAllTasksOnBoard,
-  removeTask,
-  updateTask } = tasksSlice.actions
 
 export default tasksSlice.reducer
