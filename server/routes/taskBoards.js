@@ -5,6 +5,9 @@ const authorizeUser = require('../middlewares/authorize')
 const router = express.Router()
 router.use(authorizeUser)
 
+/**
+ * Get stored Task Boards
+ */
 router.get('/', (req, res) => {
   const userId = req.userId
 
@@ -18,6 +21,9 @@ router.get('/', (req, res) => {
   res.status(200).json(taskBoardsRes)
 })
 
+/**
+ * Add new Board
+ */
 router.post('/', (req, res) => {
   const rawData = fs.readFileSync(__dirname + '/storedTaskBoards.json')
   const allTaskBoards = JSON.parse(rawData)
@@ -40,6 +46,9 @@ router.post('/', (req, res) => {
   res.status(200).json(newBoard)
 })
 
+/**
+ * Remove Board
+ */
 router.delete('/:boardId', (req, res) => {
   const rawData = fs.readFileSync(__dirname + '/storedTaskBoards.json')
   const allTaskBoards = JSON.parse(rawData)
@@ -49,6 +58,52 @@ router.delete('/:boardId', (req, res) => {
 
   fs.writeFileSync(__dirname + '/storedTaskBoards.json', JSON.stringify(remaining))
   res.status(200).json(boardId)
+})
+
+/**
+ * Add new User to a Board
+ */
+router.post('/user', (req, res) => {
+  const rawData = fs.readFileSync(__dirname + '/storedTaskBoards.json')
+  const allTaskBoards = JSON.parse(rawData)
+
+  const { boardId, userId } = req.body
+  const modifiedBoards = allTaskBoards.map(board => 
+    board.id === Number(boardId)
+    ? { 
+        ...board, 
+        userIds: board.userIds.includes(userId) 
+                  ? board.userIds 
+                  : [...board.userIds, userId].sort()
+      }
+    : board
+  )
+
+  fs.writeFileSync(__dirname + '/storedTaskBoards.json', JSON.stringify(modifiedBoards))
+  res.status(200).json(modifiedBoards)
+})
+
+/**
+ * Remove user from board
+ */
+router.delete('/user/:boardId-:userId', (req, res) => {
+  const rawData = fs.readFileSync(__dirname + '/storedTaskBoards.json')
+  const allTaskBoards = JSON.parse(rawData)
+
+  const { boardId, userId } = req.params
+  const modifiedBoards = allTaskBoards.map(board => 
+    board.id === Number(boardId)
+    ? { 
+        ...board, 
+        userIds: board.userIds.includes(userId) 
+                  ? board.userIds 
+                  : board.userIds.filter(id => id !== Number(userId))
+      }
+    : board
+  )
+
+  fs.writeFileSync(__dirname + '/storedTaskBoards.json', JSON.stringify(modifiedBoards))
+  res.status(200).json(modifiedBoards)
 })
 
 module.exports = router

@@ -132,7 +132,8 @@ const AddTaskForm = ({ boardId, hide, setTasks }) => {
 }
 
 export const TaskBoard = ({ boardId, name, currentUser, userIds }) => {
-  const dispatch = useDispatch();
+  const dispatch = useDispatch()
+  const [currentUsers, setCurrentUsers] = useState(userIds)
   const [tasks, setTasks] = useState([])
 
   useEffect(() => {
@@ -149,8 +150,13 @@ export const TaskBoard = ({ boardId, name, currentUser, userIds }) => {
   return (
     <div className="container">
       <h2>{name}</h2>
-      <AddNewUser boardId={boardId} currentUser={currentUser} userIds={userIds} />
-      <CurrentUsers boardId={boardId} userIds={userIds} />
+      <AddNewUser
+        boardId={boardId}
+        currentUser={currentUser}
+        userIds={currentUsers}
+        setUserIds={setCurrentUsers}
+      />
+      <CurrentUsers boardId={boardId} userIds={currentUsers} setUserIds={setCurrentUsers} />
       <TaskBoardBody boardId={boardId} setTasks={setTasks} tasksOnBoard={tasks} />
       <div className="control-buttons">
         <button className="task-button delete-task" onClick={onRemoveBoard}>

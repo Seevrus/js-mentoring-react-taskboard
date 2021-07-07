@@ -31,6 +31,14 @@ export const addBoard = createAsyncThunk(
   }
 )
 
+export const addUserToBoard = createAsyncThunk(
+  'taskBoards/addUserToBoard',
+  async ({ boardId, userId }) => {
+    const response = await axios.post("/api/taskBoards/user", { boardId, userId })
+    return response.data
+  }
+)
+
 export const fetchTaskBoards = createAsyncThunk(
   'taskBoards/fetchTaskBoards',
   async () => {
@@ -49,8 +57,9 @@ export const removeBoard = createAsyncThunk(
 
 export const removeUserFromBoard = createAsyncThunk(
   'taskBoards/removeUserFromBoard',
-  async userId => {
-    
+  async ({ boardId, userId }) => {
+    const response = await axios.delete(`/api/taskBoards/user/${boardId}-${userId}`)
+    return response.data
   }
 )
 
@@ -58,26 +67,14 @@ const taskBoardsSlice = createSlice({
   name: 'taskBoards',
   initialState,
   reducers: {
-    addUser: (state, action) => {
-      const { boardId, userId } = action.payload
-      const board = state.entities[boardId]
-      if (board) {
-        board.userIds.push(userId)
-      }
-    },
     removeAllBoards: taskBoardsAdapter.removeAll,
-    removeUser: (state, action) => {
-      const { boardId, userId } = action.payload
-      const board = state.entities[boardId]
-      if (board) {
-        board.userIds = board.userIds.filter(id => id !== userId)
-      }
-    }
   },
   extraReducers: {
     [addBoard.fulfilled]: taskBoardsAdapter.addOne,
+    [addUserToBoard.fulfilled]: taskBoardsAdapter.updateMany,
     [fetchTaskBoards.fulfilled]: taskBoardsAdapter.addMany,
     [removeBoard.fulfilled]: taskBoardsAdapter.removeOne,
+    [removeUserFromBoard.fulfilled]: taskBoardsAdapter.updateMany,
   }
 })
 
@@ -87,9 +84,7 @@ export const {
 } = taskBoardsAdapter.getSelectors(state => state.taskBoards)
 
 export const {
-  addUser,
   removeAllBoards,
-  removeUser
 } = taskBoardsSlice.actions
 
 export default taskBoardsSlice.reducer

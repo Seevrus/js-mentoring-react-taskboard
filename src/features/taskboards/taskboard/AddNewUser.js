@@ -1,10 +1,10 @@
 import { useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { selectAllUsers } from "../../users/usersSlice"
-import { addUser } from "../taskBoardsSlice"
+import { addUserToBoard } from "../taskBoardsSlice"
 import './AddNewUser.css'
 
-export const AddNewUser = ({ boardId, currentUser, userIds }) => {
+export const AddNewUser = ({ boardId, currentUser, userIds, setUserIds }) => {
   const users = useSelector(selectAllUsers)
   const otherUsers = users.filter(user => user.id !== currentUser && !userIds.includes(user.id))
   const [filteredUsers, setFilteredUsers] = useState([])
@@ -22,7 +22,8 @@ export const AddNewUser = ({ boardId, currentUser, userIds }) => {
   const onAddUser = e => {
     const email = e.target.innerHTML
     const userId = otherUsers.find(user => user.email === email).id
-    dispatch(addUser({ boardId, userId }))
+    dispatch(addUserToBoard({ boardId, userId }))
+      .then(() => setUserIds([...userIds, userId]))
     setSearchString('')
   }
 
