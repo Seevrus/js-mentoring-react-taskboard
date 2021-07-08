@@ -19,12 +19,14 @@ function App() {
 
   useEffect(() => {
     dispatch(fetchCsrfToken())
-    dispatch(checkLoginStatus())
-      .then(res => {
-        if (!res.payload.error) {
-          dispatch(fetchUsers())
-            .then(dispatch(setCurrentUser(res.payload.id)))
-        }
+      .then(() => {
+        dispatch(checkLoginStatus())
+        .then(res => {
+          if (!res.payload.error) {
+            dispatch(fetchUsers())
+              .then(dispatch(setCurrentUser(res.payload.id)))
+          }
+        })
       })
   }, [dispatch])
 
