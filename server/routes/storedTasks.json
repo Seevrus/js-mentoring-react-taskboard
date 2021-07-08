@@ -1,7 +1,1 @@
-[
-  { "id": 1, "boardId": 1, "text": "Task to do 1", "status": "todo" },
-  { "id": 2, "boardId": 1, "text": "Task to do 2", "status": "todo" },
-  { "id": 3, "boardId": 1, "text": "Task in progress", "status": "inProgress" },
-  { "id": 4, "boardId": 1, "text": "Done task", "status": "finished" },
-  { "id": 5, "boardId": 1, "text": "Finished task", "status": "finished" }
-]
+[{"id":1,"boardId":1,"text":"Task to do 1","status":"todo"},{"id":2,"boardId":1,"text":"Task to do 2","status":"todo"},{"id":3,"boardId":1,"text":"Task in progress","status":"inProgress"},{"id":4,"boardId":1,"text":"Done task","status":"finished"},{"id":5,"boardId":1,"text":"Finished task","status":"finished"}]
