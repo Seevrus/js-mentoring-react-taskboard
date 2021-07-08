@@ -27,7 +27,15 @@
 }
 
 .current-user:hover {
-  background: #0246a2;
+  background: #0250bc;
+}
+
+.current-user.current-user-loggedin {
+  background: #29de7d;
+}
+
+.current-user.current-user-loggedin:hover {
+  background: #1cb864;
 }
 
 .current-user > .current-user-remove {
